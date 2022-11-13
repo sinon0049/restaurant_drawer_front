@@ -8,7 +8,7 @@
 .navbar {
   width: 100%;
   height: 3rem;
-  background-color: #282a35;
+  background-color: #20222a;
   color: white;
   line-height: 3rem;
   span {
