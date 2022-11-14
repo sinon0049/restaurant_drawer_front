@@ -18,4 +18,15 @@ const router = createRouter({
   ],
 });
 
+router.beforeEach((to, from, next) => {
+  const pathWithoutAuth = ["/signin", "/signup"];
+  const token = localStorage.getItem("token");
+  if (token && pathWithoutAuth.includes(to.fullPath)) {
+    router.push({ name: "rest-draw" });
+  } else if (!token && !pathWithoutAuth.includes(to.fullPath)) {
+    router.push({ name: "sign-in" });
+  }
+  next();
+});
+
 export default router;
