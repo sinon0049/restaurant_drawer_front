@@ -25,6 +25,8 @@
       <router-link to="/signup">
         <button id="sign-up">Sign Up</button>
       </router-link>
+      <button @click="fbSignIn" id="fb-sign-in">Signin with Facebook</button>
+      <button @click="fbSignOut" id="fb-sign-in">FB Sign Out</button>
     </div>
   </div>
 </template>
@@ -82,6 +84,7 @@
 </style>
 
 <script lang="ts" setup>
+/* global FB: readonly */
 import { usersAPI } from "@/apis/user";
 import router from "@/router";
 import { reactive } from "vue";
@@ -91,9 +94,20 @@ const signInData = reactive({
   password: "",
 });
 
+window.fbAsyncInit = function () {
+  FB.init({
+    appId: import.meta.env.VITE_FB_APP_ID,
+    cookie: true,
+    xfbml: true,
+    version: "v15.0",
+  });
+
+  FB.AppEvents.logPageView();
+};
+
 async function signIn() {
   try {
-    if (!signInData.email) return console.log("Please type your email.");
+    if (!signInData.email.trim()) return console.log("Please type your email.");
     if (!signInData.password) return console.log("Please type your password.");
     const { data } = await usersAPI.signIn(signInData);
     if (data.status !== "success") throw new Error(data.message);
@@ -102,5 +116,21 @@ async function signIn() {
   } catch (error) {
     console.log(error);
   }
+}
+
+function fbSignIn() {
+  FB.login(
+    (response) => {
+      console.log(response);
+      FB.api("/me/?fields=id,name,email", function (user) {
+        console.log(user);
+      });
+    },
+    { scope: "email,public_profile" }
+  );
+}
+
+function fbSignOut() {
+  FB.logout((res) => console.log(res));
 }
 </script>

@@ -119,8 +119,8 @@ const signUpData = reactive({
 
 async function signUp() {
   try {
-    if (!signUpData.name) return console.log("Please type your name.");
-    if (!signUpData.email) return console.log("Please type your email.");
+    if (!signUpData.name.trim()) return console.log("Please type your name.");
+    if (!signUpData.email.trim()) return console.log("Please type your email.");
     if (!signUpData.password) return console.log("Please type your password.");
     if (!signUpData.confirmPassword)
       return console.log("Please confirm your password.");
