@@ -1,5 +1,5 @@
 import api from "@/utils/helper";
-import type { signInData, signUpData } from "env";
+import type { facebookSignInData, signInData, signUpData } from "env";
 
 export const usersAPI = {
   signIn: function (signInData: signInData) {
@@ -7,5 +7,8 @@ export const usersAPI = {
   },
   signUp: function (signUpData: signUpData) {
     return api.post("/users/signup", signUpData);
+  },
+  fbSignIn: function (signInData: facebookSignInData) {
+    return api.post("/users/fbsignin", signInData);
   },
 };

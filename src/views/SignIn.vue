@@ -27,6 +27,7 @@
       </router-link>
       <button @click="fbSignIn" id="fb-sign-in">Signin with Facebook</button>
       <button @click="fbSignOut" id="fb-sign-in">FB Sign Out</button>
+      <button @click="fbTest" id="fb-test">Test token</button>
     </div>
   </div>
 </template>
@@ -51,7 +52,7 @@
     flex-direction: column;
     margin-top: 1rem;
     button {
-      width: 80px;
+      width: 150px;
       height: 30px;
       margin: 1rem auto 0 auto;
       border: 0;
@@ -84,26 +85,18 @@
 </style>
 
 <script lang="ts" setup>
-/* global FB: readonly */
+/* global FB: readonly, facebook: readonly */
 import { usersAPI } from "@/apis/user";
 import router from "@/router";
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
+import type { facebookSignInResponse } from "env";
 
 const signInData = reactive({
   email: "",
   password: "",
 });
 
-window.fbAsyncInit = function () {
-  FB.init({
-    appId: import.meta.env.VITE_FB_APP_ID,
-    cookie: true,
-    xfbml: true,
-    version: "v15.0",
-  });
-
-  FB.AppEvents.logPageView();
-};
+const token = ref("");
 
 async function signIn() {
   try {
@@ -120,11 +113,22 @@ async function signIn() {
 
 function fbSignIn() {
   FB.login(
-    (response) => {
+    (response: facebook.StatusResponse) => {
       console.log(response);
-      FB.api("/me/?fields=id,name,email", function (user) {
-        console.log(user);
-      });
+      if (response.status === "connected") {
+        token.value = response.authResponse.accessToken;
+        FB.api(
+          "/me/?fields=id,name,email",
+          async function (user: facebookSignInResponse) {
+            console.log(user);
+            const { data } = await usersAPI.fbSignIn({
+              name: user.name,
+              email: user.email,
+            });
+            console.log(data);
+          }
+        );
+      }
     },
     { scope: "email,public_profile" }
   );
@@ -132,5 +136,9 @@ function fbSignIn() {
 
 function fbSignOut() {
   FB.logout((res) => console.log(res));
+}
+
+function fbTest() {
+  FB.api(`/debug_token?input_token=${token.value}`, (res) => console.log(res));
 }
 </script>
