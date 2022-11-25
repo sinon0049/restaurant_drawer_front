@@ -25,9 +25,10 @@
       <router-link to="/signup">
         <button id="sign-up">Sign Up</button>
       </router-link>
-      <button @click="fbSignIn" id="fb-sign-in">Signin with Facebook</button>
-      <button @click="fbSignOut" id="fb-sign-in">FB Sign Out</button>
-      <button @click="fbTest" id="fb-test">Test token</button>
+      <button @click="handleFacebookSignIn" id="fb-sign-in">
+        Signin with Facebook
+      </button>
+      <button @click="handleGoogleSignin">Signin with Google</button>
     </div>
   </div>
 </template>
@@ -61,6 +62,9 @@
         cursor: pointer;
       }
     }
+    .g-btn-wrapper {
+      margin: 0 auto;
+    }
     a {
       text-align: center;
     }
@@ -87,16 +91,16 @@
 <script lang="ts" setup>
 /* global FB: readonly, facebook: readonly */
 import { usersAPI } from "@/apis/user";
-import router from "@/router";
-import { reactive, ref } from "vue";
-import type { facebookSignInResponse } from "env";
+import { useRouter } from "vue-router";
+import { reactive } from "vue";
+import type { facebookResponse } from "env";
+import { googleTokenLogin } from "vue3-google-login";
 
 const signInData = reactive({
   email: "",
   password: "",
 });
-
-const token = ref("");
+const router = useRouter();
 
 async function signIn() {
   try {
@@ -111,34 +115,22 @@ async function signIn() {
   }
 }
 
-function fbSignIn() {
-  FB.login(
-    (response: facebook.StatusResponse) => {
-      console.log(response);
-      if (response.status === "connected") {
-        token.value = response.authResponse.accessToken;
-        FB.api(
-          "/me/?fields=id,name,email",
-          async function (user: facebookSignInResponse) {
-            console.log(user);
-            const { data } = await usersAPI.fbSignIn({
-              name: user.name,
-              email: user.email,
-            });
-            console.log(data);
-          }
-        );
-      }
-    },
-    { scope: "email,public_profile" }
-  );
+function handleFacebookSignIn() {
+  FB.login((response: facebook.StatusResponse) => {
+    if (response.status === "connected") {
+      FB.api("/me/?fields=id,name,email", async (user: facebookResponse) => {
+        const { data } = await usersAPI.facebookSignIn({
+          facebookId: user.id,
+        });
+        console.log(data);
+      });
+    }
+  });
 }
 
-function fbSignOut() {
-  FB.logout((res) => console.log(res));
-}
-
-function fbTest() {
-  FB.api(`/debug_token?input_token=${token.value}`, (res) => console.log(res));
+async function handleGoogleSignin() {
+  const { access_token } = await googleTokenLogin();
+  const { data } = await usersAPI.googleSignIn({ access_token });
+  console.log(data);
 }
 </script>

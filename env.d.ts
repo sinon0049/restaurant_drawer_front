@@ -10,10 +10,15 @@ export interface signUpData extends signInData {
 }
 
 export interface facebookSignInData {
+  facebookId: string;
+}
+
+export interface facebookResponse {
+  id: string;
   email: string;
   name: string;
 }
 
-export interface facebookSignInResponse extends facebookSignInData {
-  id: number;
+export interface googleSignInData {
+  access_token: string;
 }

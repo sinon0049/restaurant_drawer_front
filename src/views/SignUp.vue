@@ -107,7 +107,7 @@
 
 <script lang="ts" setup>
 import { usersAPI } from "@/apis/user";
-import router from "@/router";
+import { useRouter } from "vue-router";
 import { reactive } from "vue";
 
 const signUpData = reactive({
@@ -116,6 +116,7 @@ const signUpData = reactive({
   password: "",
   confirmPassword: "",
 });
+const router = useRouter();
 
 async function signUp() {
   try {
