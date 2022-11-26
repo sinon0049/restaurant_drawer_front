@@ -2,6 +2,7 @@ import api from "@/utils/helper";
 import type {
   facebookSignInData,
   googleSignInData,
+  OAuthSignUpData,
   signInData,
   signUpData,
 } from "env";
@@ -14,9 +15,12 @@ export const usersAPI = {
     return api.post("/users/signup", signUpData);
   },
   facebookSignIn: function (signInData: facebookSignInData) {
-    return api.post("/users/fbsignin", signInData);
+    return api.post("/users/facebooksignin", signInData);
   },
   googleSignIn: function (signInData: googleSignInData) {
-    return api.post("users/googlesignin", signInData);
+    return api.post("/users/googlesignin", signInData);
+  },
+  OAuthSignUp: function (signUpData: OAuthSignUpData) {
+    return api.post("/users/oauthsignup", signUpData);
   },
 };

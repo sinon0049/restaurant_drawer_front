@@ -2,7 +2,7 @@
   <div class="container">
     <h2>Sign In</h2>
     <div class="input-group">
-      <label for="input-email" class="form-label">Email address</label>
+      <label for="input-email" class="form-label">Email</label>
       <input
         type="email"
         class="form-control"
@@ -11,7 +11,7 @@
       />
     </div>
     <div class="input-group">
-      <label for="input-password" class="form-label">password</label>
+      <label for="input-password" class="form-label">Password</label>
       <input
         type="password"
         class="form-control"
@@ -122,15 +122,29 @@ function handleFacebookSignIn() {
         const { data } = await usersAPI.facebookSignIn({
           facebookId: user.id,
         });
-        console.log(data);
+        if (data.status !== "success") {
+          localStorage.setItem("facebookId", data.facebookId);
+          return router.push("/oauthsignup");
+        }
+        localStorage.setItem("token", data.token);
+        return router.push("/restdraw");
       });
     }
   });
 }
 
 async function handleGoogleSignin() {
-  const { access_token } = await googleTokenLogin();
-  const { data } = await usersAPI.googleSignIn({ access_token });
-  console.log(data);
+  try {
+    const { access_token } = await googleTokenLogin();
+    const { data } = await usersAPI.googleSignIn({ access_token });
+    if (data.status !== "success") {
+      localStorage.setItem("googleId", data.googleId);
+      return router.push("/oauthsignup");
+    }
+    localStorage.setItem("token", data.token);
+    return router.push("/restdraw");
+  } catch (error) {
+    console.log(error);
+  }
 }
 </script>

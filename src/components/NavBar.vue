@@ -1,7 +1,18 @@
 <template>
   <nav class="navbar">
-    <span>Restaurant Drawer</span>
-    <button @click="signOut">Sign Out</button>
+    <span id="title">Restaurant Drawer</span>
+    <div class="btn-group">
+      <router-link to="/restdraw">
+        <span>Draw</span>
+      </router-link>
+      <router-link to="/restdraw">
+        <span>Record</span>
+      </router-link>
+      <router-link to="/restdraw">
+        <span>Profile</span>
+      </router-link>
+      <span @click="signOut">Signout</span>
+    </div>
   </nav>
 </template>
 
@@ -14,19 +25,25 @@
   background-color: #20222a;
   color: white;
   line-height: 3rem;
-  span {
+  #title {
     margin-left: 1%;
   }
-  button {
-    width: 80px;
-    height: 70%;
-    float: right;
-    color: white;
-    border: 1px solid white;
-    border-radius: 3px;
-    background-color: #20222a;
-    display: block;
-    margin: auto 10px auto auto;
+  .btn-group {
+    height: 100%;
+    width: 30%;
+    margin: auto 2% auto auto;
+    display: flex;
+    justify-content: space-between;
+    a,
+    span {
+      &:hover {
+        cursor: pointer;
+      }
+    }
+    a {
+      text-decoration: none;
+      color: white;
+    }
   }
 }
 </style>

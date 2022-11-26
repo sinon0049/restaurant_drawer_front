@@ -22,3 +22,10 @@ export interface facebookResponse {
 export interface googleSignInData {
   access_token: string;
 }
+
+export interface OAuthSignUpData {
+  email: string;
+  name: string;
+  facebookId: string | null;
+  googleId: string | null;
+}
