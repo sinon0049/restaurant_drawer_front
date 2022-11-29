@@ -206,7 +206,6 @@ async function commitEdit(attribute: string) {
       const { data } = await usersAPI.updateProfile({
         name: store.profile.name,
       });
-      console.log(data);
       if (data.status !== "success") return console.log(data.message);
       // enable button and close input after receiving response
       editStatus.name = false;
@@ -219,7 +218,6 @@ async function commitEdit(attribute: string) {
       const { data } = await usersAPI.updateProfile({
         email: store.profile.email,
       });
-      console.log(data);
       if (data.status !== "success") return console.log(data.message);
       // enable button and close input after receiving response
       editStatus.email = false;
@@ -242,6 +240,7 @@ async function disconnectSocialAccount(accountFrom: string) {
     if (data.status !== "success") return console.log(data.message);
     if (accountFrom === "facebook") store.profile.facebookId = "";
     else if (accountFrom === "google") store.profile.googleId = "";
+    console.log(data.user);
   } catch (error) {
     console.log(error);
   }
@@ -254,7 +253,7 @@ async function connectFacebookAccount() {
         const payLoad = { facebookId: user.id };
         const { data } = await usersAPI.updateProfile(payLoad);
         if (data.status !== "success") return console.log(data.message);
-        store.profile.facebookId = user.id;
+        store.profile.facebookId = data.user.facebookId;
         FB.logout();
       });
     }
@@ -264,7 +263,9 @@ async function connectFacebookAccount() {
 async function connectGoogleAccount() {
   try {
     const { access_token } = await googleTokenLogin();
-    console.log(access_token);
+    const { data } = await usersAPI.updateProfile({ access_token });
+    if (data.status !== "success") return console.log(data.message);
+    store.profile.googleId = data.user.googleId;
   } catch (error) {
     console.log(error);
   }
