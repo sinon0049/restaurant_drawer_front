@@ -29,3 +29,14 @@ export interface OAuthSignUpData {
   facebookId: string | null;
   googleId: string | null;
 }
+
+export interface OAuthUserData extends OAuthSignUpData {
+  id: number;
+}
+
+export interface updatedProfile {
+  name?: string;
+  email?: string;
+  facebookId?: string | null;
+  googleId?: string | null;
+}

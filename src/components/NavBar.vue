@@ -1,14 +1,14 @@
 <template>
   <nav class="navbar">
     <span id="title">Restaurant Drawer</span>
-    <div class="btn-group">
+    <div class="btn-group" v-if="store.profile.id !== -1">
       <router-link to="/restdraw">
         <span>Draw</span>
       </router-link>
       <router-link to="/restdraw">
         <span>Record</span>
       </router-link>
-      <router-link to="/restdraw">
+      <router-link to="/profile">
         <span>Profile</span>
       </router-link>
       <span @click="signOut">Signout</span>
@@ -49,10 +49,15 @@
 </style>
 
 <script lang="ts" setup>
-import router from "@/router";
+import { useRouter } from "vue-router";
+import { userStore } from "@/stores/user";
+
+const router = useRouter();
+const store = userStore();
 
 function signOut() {
   localStorage.removeItem("token");
+  store.cleanUser();
   router.push("/signin");
 }
 </script>

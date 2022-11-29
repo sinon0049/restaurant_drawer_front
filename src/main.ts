@@ -8,11 +8,15 @@ import router from "./router";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faLocationCrosshairs } from "@fortawesome/free-solid-svg-icons";
+import {
+  faLocationCrosshairs,
+  faFloppyDisk,
+  faX,
+} from "@fortawesome/free-solid-svg-icons";
 
 import vue3GoogleLogin from "vue3-google-login";
 
-library.add(faLocationCrosshairs);
+library.add(faLocationCrosshairs, faFloppyDisk, faX);
 
 const app = createApp(App).component("fa-icon", FontAwesomeIcon);
 

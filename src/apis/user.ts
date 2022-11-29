@@ -5,6 +5,7 @@ import type {
   OAuthSignUpData,
   signInData,
   signUpData,
+  updatedProfile,
 } from "env";
 
 export const usersAPI = {
@@ -22,5 +23,11 @@ export const usersAPI = {
   },
   OAuthSignUp: function (signUpData: OAuthSignUpData) {
     return api.post("/users/oauthsignup", signUpData);
+  },
+  getCurrentUser: function () {
+    return api.get("/users/current_user");
+  },
+  updateProfile: function (profile: updatedProfile) {
+    return api.put("/users", profile);
   },
 };
