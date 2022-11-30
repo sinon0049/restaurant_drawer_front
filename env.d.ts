@@ -32,6 +32,7 @@ export interface OAuthSignUpData {
 
 export interface OAuthUserData extends OAuthSignUpData {
   id: number;
+  isPwdSet: boolean;
 }
 
 export interface updatedProfile {
@@ -39,4 +40,10 @@ export interface updatedProfile {
   email?: string;
   facebookId?: string | null;
   access_token?: string | null;
+}
+
+export interface updatedPassword {
+  currentPwd: string;
+  newPwd: string;
+  confirmPwd: string;
 }

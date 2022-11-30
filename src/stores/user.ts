@@ -9,6 +9,7 @@ export const userStore = defineStore("userStore", () => {
     email: "",
     facebookId: "",
     googleId: "",
+    isPwdSet: false,
   });
 
   function storeUser(user: OAuthUserData) {
@@ -17,6 +18,7 @@ export const userStore = defineStore("userStore", () => {
     profile.email = user.email;
     profile.facebookId = user.facebookId;
     profile.googleId = user.googleId;
+    profile.isPwdSet = user.isPwdSet;
   }
 
   function cleanUser() {

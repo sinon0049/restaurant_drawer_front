@@ -6,28 +6,32 @@ import type {
   signInData,
   signUpData,
   updatedProfile,
+  updatedPassword,
 } from "env";
 
 export const usersAPI = {
-  signIn: function (signInData: signInData) {
-    return api.post("/users/signin", signInData);
+  signIn: function (payLoad: signInData) {
+    return api.post("/users/signin", payLoad);
   },
-  signUp: function (signUpData: signUpData) {
-    return api.post("/users/signup", signUpData);
+  signUp: function (payLoad: signUpData) {
+    return api.post("/users/signup", payLoad);
   },
-  facebookSignIn: function (signInData: facebookSignInData) {
-    return api.post("/users/facebooksignin", signInData);
+  facebookSignIn: function (payLoad: facebookSignInData) {
+    return api.post("/users/facebooksignin", payLoad);
   },
-  googleSignIn: function (signInData: googleSignInData) {
-    return api.post("/users/googlesignin", signInData);
+  googleSignIn: function (payLoad: googleSignInData) {
+    return api.post("/users/googlesignin", payLoad);
   },
-  OAuthSignUp: function (signUpData: OAuthSignUpData) {
-    return api.post("/users/oauthsignup", signUpData);
+  OAuthSignUp: function (payLoad: OAuthSignUpData) {
+    return api.post("/users/oauthsignup", payLoad);
   },
   getCurrentUser: function () {
     return api.get("/users/current_user");
   },
-  updateProfile: function (profile: updatedProfile) {
-    return api.put("/users", profile);
+  updateProfile: function (payLoad: updatedProfile) {
+    return api.put("/users/profile", payLoad);
+  },
+  updatePassword: function (payLoad: updatedPassword) {
+    return api.put("/users/password", payLoad);
   },
 };
