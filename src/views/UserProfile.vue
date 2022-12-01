@@ -144,14 +144,14 @@
 <style lang="scss" scoped>
 .container {
   margin: 0 auto;
-  width: 50%;
+  width: 90%;
   h2 {
     margin: 40px auto 10px auto;
   }
   .profile-container {
     .profile {
       display: grid;
-      grid-template-columns: 2fr 3fr 1fr;
+      grid-template-columns: 1fr 2fr 1fr;
       height: fit-content;
       border-bottom: 1px solid grey;
       text-align: left;
@@ -187,6 +187,15 @@
     input {
       height: 14px;
       margin: auto auto auto 0;
+    }
+  }
+}
+@media screen and (min-width: 768px) {
+  .container {
+    width: 40%;
+    max-width: 550px;
+    .profile {
+      grid-template-columns: 2fr 3fr 1fr;
     }
   }
 }
