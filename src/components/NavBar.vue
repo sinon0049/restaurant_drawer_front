@@ -9,7 +9,7 @@
       <router-link to="/restdraw">
         <span>Draw</span>
       </router-link>
-      <router-link to="/restdraw">
+      <router-link to="/record">
         <span>Record</span>
       </router-link>
       <router-link to="/profile">
@@ -17,7 +17,9 @@
       </router-link>
       <span @click="signOut">Signout</span>
     </div>
-    <div id="navbar-control" @click="toggleNavbar"></div>
+    <div id="navbar-control-container" @click="toggleNavbar">
+      <div id="navbar-control"></div>
+    </div>
   </nav>
 </template>
 
@@ -35,6 +37,7 @@
     margin-left: 20px;
   }
   .btn-group {
+    z-index: 20;
     background-color: #20222a;
     height: 100%;
     width: 100%;
@@ -60,27 +63,33 @@
   .close {
     transform: scale(1, 0);
   }
-  #navbar-control {
-    position: absolute;
-    border-radius: 1px;
-    right: 20px;
-    height: 3px;
+  #navbar-control-container {
     width: 30px;
-    background-color: white;
-    &::before,
-    &::after {
-      content: "";
+    height: 30px;
+    position: absolute;
+    right: 20px;
+    #navbar-control {
       position: absolute;
       border-radius: 1px;
       height: 3px;
       width: 30px;
+      top: calc(50% - 1.5px);
       background-color: white;
-    }
-    &::before {
-      top: 10px;
-    }
-    &::after {
-      bottom: 10px;
+      &::before,
+      &::after {
+        content: "";
+        position: absolute;
+        border-radius: 1px;
+        height: 3px;
+        width: 30px;
+        background-color: white;
+      }
+      &::before {
+        top: 10px;
+      }
+      &::after {
+        bottom: 10px;
+      }
     }
   }
 }
@@ -97,7 +106,7 @@
       justify-content: space-between;
       transform: scale(1, 1);
     }
-    #navbar-control {
+    #navbar-control-container {
       display: none;
     }
   }
@@ -126,4 +135,6 @@ function signOut() {
 function toggleNavbar() {
   isNavbarOpen.value = !isNavbarOpen.value;
 }
+
+router.afterEach(() => (isNavbarOpen.value = false));
 </script>
