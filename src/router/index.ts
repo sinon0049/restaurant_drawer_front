@@ -4,6 +4,7 @@ import SignUp from "../views/SignUp.vue";
 import RestDraw from "../views/RestDraw.vue";
 import OAuthSignUp from "@/views/OAuthSignUp.vue";
 import UserProfile from "@/views/UserProfile.vue";
+import RestaurantRecord from "@/views/RestaurantRecord.vue";
 import { usersAPI } from "@/apis/user";
 import { userStore } from "@/stores/user";
 
@@ -34,6 +35,11 @@ const router = createRouter({
       path: "/profile",
       name: "profile",
       component: UserProfile,
+    },
+    {
+      path: "/record",
+      name: "restaurant-record",
+      component: RestaurantRecord,
     },
   ],
 });
