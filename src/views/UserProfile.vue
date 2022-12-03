@@ -5,7 +5,9 @@
       <!-- name -->
       <div class="profile">
         <span>Name</span>
-        <span v-if="!editStatus.name" class="grey">{{ store.profile.name }}</span>
+        <span v-if="!editStatus.name" class="grey">{{
+          store.profile.name
+        }}</span>
         <input type="text" v-model="store.profile.name" v-else />
         <span
           class="btn-modify"
@@ -32,7 +34,9 @@
       <!-- email -->
       <div class="profile">
         <span>Email</span>
-        <span v-if="!editStatus.email" class="grey">{{ store.profile.email }}</span>
+        <span v-if="!editStatus.email" class="grey">{{
+          store.profile.email
+        }}</span>
         <input type="email" v-model="store.profile.email" v-else />
         <span
           class="btn-modify"
