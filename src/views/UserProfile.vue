@@ -5,7 +5,7 @@
       <!-- name -->
       <div class="profile">
         <span>Name</span>
-        <span v-if="!editStatus.name">{{ store.profile.name }}</span>
+        <span v-if="!editStatus.name" class="grey">{{ store.profile.name }}</span>
         <input type="text" v-model="store.profile.name" v-else />
         <span
           class="btn-modify"
@@ -21,18 +21,18 @@
           >
             <fa-icon
               icon="floppy-disk"
-              size="xl"
+              size="2xl"
               style="color: #0088cc"
               class="store"
             />
           </button>
-          <fa-icon icon="x" size="xl" @click="cancelEdit('name')" />
+          <fa-icon icon="x" size="2xl" @click="cancelEdit('name')" />
         </div>
       </div>
       <!-- email -->
       <div class="profile">
         <span>Email</span>
-        <span v-if="!editStatus.email">{{ store.profile.email }}</span>
+        <span v-if="!editStatus.email" class="grey">{{ store.profile.email }}</span>
         <input type="email" v-model="store.profile.email" v-else />
         <span
           class="btn-modify"
@@ -48,12 +48,12 @@
           >
             <fa-icon
               icon="floppy-disk"
-              size="xl"
+              size="2xl"
               style="color: #0088cc"
               class="store"
             />
           </button>
-          <fa-icon icon="x" size="xl" @click="cancelEdit('email')" />
+          <fa-icon icon="x" size="2xl" @click="cancelEdit('email')" />
         </div>
       </div>
       <!-- password -->
@@ -98,7 +98,7 @@
       <!-- facebook -->
       <div class="profile">
         <span>Facebook</span>
-        <span>{{
+        <span class="grey">{{
           store.profile.facebookId ? "Connected" : "Not Connected"
         }}</span>
         <span
@@ -119,7 +119,7 @@
       <!-- google -->
       <div class="profile">
         <span>Google</span>
-        <span>{{
+        <span class="grey">{{
           store.profile.googleId ? "Connected" : "Not Connected"
         }}</span>
         <span
@@ -164,15 +164,15 @@
       }
       .btn-group {
         display: flex;
-        justify-content: space-between;
+        justify-content: space-around;
         svg {
           &:hover {
             cursor: pointer;
           }
-          margin: auto auto auto 0;
+          margin: auto;
         }
         button {
-          margin: 0 auto 0 0;
+          margin: 0 auto;
           padding: 0;
           border: 0;
           background-color: white;
@@ -183,9 +183,13 @@
         display: flex;
         flex-direction: column;
       }
+      .grey {
+        color: grey;
+      }
     }
     input {
       height: 14px;
+      width: 90%;
       margin: auto auto auto 0;
     }
   }
