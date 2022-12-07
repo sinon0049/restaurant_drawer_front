@@ -5,68 +5,65 @@
       <!-- name -->
       <div class="profile">
         <span>Name</span>
-        <span v-if="!editStatus.name" class="grey">{{
+        <span v-if="editStatus.currentEditing !== 'name'" class="grey">{{
           store.profile.name
         }}</span>
-        <input type="text" v-model="store.profile.name" v-else />
+        <div class="input-container" v-else>
+          <input type="text" v-model="store.profile.name" />
+          <div class="btn-group">
+            <button
+              :disabled="editStatus.isEditCommited"
+              @click="commitEdit"
+              class="btn-save"
+            >
+              save
+            </button>
+            <button @click="cancelEdit" class="btn-cancel">cancel</button>
+          </div>
+        </div>
         <span
-          class="btn-modify"
+          class="link btn-modify"
           id="name-edit"
-          v-if="!editStatus.name"
+          v-if="editStatus.currentEditing !== 'name'"
           @click="startEdit('name')"
           >Edit</span
         >
-        <div class="btn-group" v-else>
-          <button
-            :disabled="editStatus.nameCommited"
-            @click="commitEdit('name')"
-          >
-            <fa-icon
-              icon="floppy-disk"
-              size="2xl"
-              style="color: #0088cc"
-              class="store"
-            />
-          </button>
-          <fa-icon icon="x" size="2xl" @click="cancelEdit('name')" />
-        </div>
       </div>
       <!-- email -->
       <div class="profile">
         <span>Email</span>
-        <span v-if="!editStatus.email" class="grey">{{
+        <span v-if="editStatus.currentEditing !== 'email'" class="grey">{{
           store.profile.email
         }}</span>
-        <input type="email" v-model="store.profile.email" v-else />
+        <div class="input-container" v-else>
+          <input type="email" v-model="store.profile.email" />
+          <div class="btn-group">
+            <button
+              :disabled="editStatus.isEditCommited"
+              @click="commitEdit"
+              class="btn-save"
+            >
+              save
+            </button>
+            <button @click="cancelEdit" class="btn-cancel">cancel</button>
+          </div>
+        </div>
+
         <span
-          class="btn-modify"
+          class="link btn-modify"
           id="email-edit"
-          v-if="!editStatus.email"
+          v-if="editStatus.currentEditing !== 'email'"
           @click="startEdit('email')"
           >Edit</span
         >
-        <div class="btn-group" v-else>
-          <button
-            :disabled="editStatus.emailCommited"
-            @click="commitEdit('email')"
-          >
-            <fa-icon
-              icon="floppy-disk"
-              size="2xl"
-              style="color: #0088cc"
-              class="store"
-            />
-          </button>
-          <fa-icon icon="x" size="2xl" @click="cancelEdit('email')" />
-        </div>
       </div>
       <!-- password -->
       <div class="profile">
         <span>Password</span>
         <span
-          class="btn-modify"
+          class="link"
           id="password-edit"
-          v-if="!editStatus.password"
+          v-if="editStatus.currentEditing !== 'password'"
           @click="startEdit('password')"
           >Change Password</span
         >
@@ -82,17 +79,21 @@
           />
           <label for="new-pwd">New Password</label>
           <input type="password" id="new-pwd" v-model="password.newPwd" />
-          <label for="confirm-pwd">Confirm Password</label>
+          <label for="confirm-pwd btn-modify">Confirm Password</label>
           <input
             type="password"
             id="confirm-pwd"
             v-model="password.confirmPwd"
           />
           <div class="btn-group">
-            <span class="btn-modify" @click="cancelEdit('password')"
-              >cancel</span
+            <button
+              :disabled="editStatus.isEditCommited"
+              @click="updatePassword"
+              class="btn-save"
             >
-            <span class="btn-modify" @click="updatePassword">save</span>
+              save
+            </button>
+            <button @click="cancelEdit" class="btn-cancel">cancel</button>
           </div>
         </div>
       </div>
@@ -106,14 +107,14 @@
           store.profile.facebookId ? "Connected" : "Not Connected"
         }}</span>
         <span
-          class="btn-modify"
+          class="link btn-modify"
           id="facebook-edit"
           v-if="store.profile.facebookId"
           @click="disconnectSocialAccount('facebook')"
           >Disconnect</span
         >
         <span
-          class="btn-modify"
+          class="link btn-modify"
           id="facebook-edit"
           v-else
           @click="connectFacebookAccount"
@@ -127,14 +128,14 @@
           store.profile.googleId ? "Connected" : "Not Connected"
         }}</span>
         <span
-          class="btn-modify"
+          class="link btn-modify"
           id="google-edit"
           v-if="store.profile.googleId"
           @click="disconnectSocialAccount('google')"
           >Disconnect</span
         >
         <span
-          class="btn-modify"
+          class="link btn-modify"
           id="google-edit"
           v-else
           @click="connectGoogleAccount"
@@ -154,13 +155,18 @@
   }
   .profile-container {
     .profile {
-      display: grid;
-      grid-template-columns: 1fr 2fr 1fr;
+      display: flex;
+      flex-direction: column;
       height: fit-content;
       border-bottom: 1px solid grey;
       text-align: left;
-      line-height: 50px;
+      line-height: 40px;
+      position: relative;
       .btn-modify {
+        position: absolute;
+        right: 0;
+      }
+      .link {
         color: #0088cc;
         &:hover {
           cursor: pointer;
@@ -168,33 +174,50 @@
       }
       .btn-group {
         display: flex;
-        justify-content: space-around;
-        svg {
+        width: 120px;
+        height: 45px;
+        justify-content: space-between;
+        button {
+          width: 50px;
+          margin: auto 10px auto 0;
+          border: 0;
+          height: 35px;
+          border-radius: 5px;
           &:hover {
             cursor: pointer;
           }
-          margin: auto;
         }
-        button {
-          margin: 0 auto;
-          padding: 0;
-          border: 0;
-          background-color: white;
-          width: fit-content;
+        .btn-save {
+          background-color: #0088cc;
+          color: white;
+        }
+        .btn-cancel {
+          background-color: #ecf0f1;
+          color: black;
         }
       }
       .password-container {
         display: flex;
         flex-direction: column;
+        margin-bottom: 5px;
+        .btn-group {
+          margin-top: 5px;
+        }
       }
       .grey {
         color: grey;
       }
-    }
-    input {
-      height: 14px;
-      width: 90%;
-      margin: auto auto auto 0;
+      .input-container {
+        height: 80px;
+        margin: auto auto 10px 0;
+      }
+      input {
+        height: 20px;
+        width: 250px;
+        margin-left: 0;
+        border-radius: 3px;
+        border: 1px solid #858585;
+      }
     }
   }
 }
@@ -202,8 +225,32 @@
   .container {
     width: 40%;
     max-width: 550px;
-    .profile {
-      grid-template-columns: 2fr 3fr 1fr;
+    .profile-container {
+      .profile {
+        display: grid;
+        grid-template-columns: 2fr 3fr 1fr;
+        height: fit-content;
+        border-bottom: 1px solid grey;
+        text-align: left;
+        line-height: 40px;
+        .input-container {
+          height: 80px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-around;
+          margin-bottom: 5px;
+          margin-top: 10px;
+          .btn-group {
+            height: fit-content;
+          }
+        }
+        .btn-modify {
+          position: unset;
+        }
+        input {
+          width: 90%;
+        }
+      }
     }
   }
 }
@@ -222,12 +269,9 @@ import { googleTokenLogin } from "vue3-google-login";
 const store = userStore();
 const editStatus = reactive({
   // control display of input
-  name: false,
-  email: false,
-  password: false,
-  // control save button
-  nameCommited: false,
-  emailCommited: false,
+  currentEditing: "",
+  // control save button to prevent multiple requests
+  isEditCommited: false,
 });
 const profileTempStore = reactive({
   name: "",
@@ -240,58 +284,47 @@ const password: updatedPassword = reactive({
 });
 
 function startEdit(attribute: string) {
-  if (attribute === "name") {
-    profileTempStore.name = store.profile.name;
-    editStatus.name = true;
-  } else if (attribute === "email") {
-    profileTempStore.email = store.profile.email;
-    editStatus.email = true;
-  } else if (attribute === "password") {
-    editStatus.password = true;
-  }
+  if (editStatus.currentEditing !== "") cancelEdit();
+  profileTempStore.email = store.profile.email;
+  profileTempStore.name = store.profile.name;
+  editStatus.currentEditing = attribute;
 }
 
-function cancelEdit(attribute: string) {
-  if (attribute === "name") {
-    store.profile.name = profileTempStore.name;
-    editStatus.name = false;
-  } else if (attribute === "email") {
-    store.profile.email = profileTempStore.email;
-    editStatus.email = false;
-  } else if (attribute === "password") {
-    editStatus.password = false;
-  }
+function cancelEdit() {
+  store.profile.name = profileTempStore.name;
+  store.profile.email = profileTempStore.email;
+  editStatus.currentEditing = "";
 }
 
-async function commitEdit(attribute: string) {
+async function commitEdit() {
   try {
-    if (attribute === "name") {
+    if (editStatus.currentEditing === "name") {
       if (!store.profile.name.trim())
         return console.log("please type your name");
       // disable button to avoid multiple request
-      editStatus.nameCommited = true;
+      editStatus.isEditCommited = true;
       const { data } = await usersAPI.updateProfile({
         name: store.profile.name,
       });
       if (data.status !== "success") return console.log(data.message);
       // enable button and close input after receiving response
-      editStatus.name = false;
-      editStatus.nameCommited = false;
-    } else if (attribute === "email") {
+      editStatus.currentEditing = "";
+    } else if (editStatus.currentEditing === "email") {
       if (!store.profile.email.trim())
         return console.log("please type your email");
       // disable button to avoid multiple request
-      editStatus.emailCommited = true;
+      editStatus.isEditCommited = true;
       const { data } = await usersAPI.updateProfile({
         email: store.profile.email,
       });
       if (data.status !== "success") return console.log(data.message);
       // enable button and close input after receiving response
-      editStatus.email = false;
-      editStatus.emailCommited = false;
+      editStatus.currentEditing = "";
     }
   } catch (error) {
     console.log(error);
+  } finally {
+    editStatus.isEditCommited = false;
   }
 }
 
@@ -351,7 +384,7 @@ async function updatePassword() {
     const { data } = await usersAPI.updatePassword(password);
     if (data.status !== "success") return console.log(data.message);
     store.profile.isPwdSet = true;
-    editStatus.password = false;
+    editStatus.currentEditing = "";
     console.log(data);
   } catch (error) {
     console.log(error);
