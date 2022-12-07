@@ -47,3 +47,9 @@ export interface updatedPassword {
   newPwd: string;
   confirmPwd: string;
 }
+
+export interface restaurantRecord {
+  name: string;
+  address: string;
+  phone: string;
+}
