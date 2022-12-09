@@ -53,3 +53,10 @@ export interface restaurantRecord {
   address: string;
   phone: string;
 }
+
+export interface restaurantFullRecord extends restaurantRecord {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  userId: number;
+}
