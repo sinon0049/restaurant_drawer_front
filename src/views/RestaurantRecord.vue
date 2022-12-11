@@ -11,7 +11,7 @@
         </div>
         <span>Delete</span>
       </div>
-      <div class="record-group" @click="deleteRecord">
+      <div class="record-group" @click="handleRecord">
         <div
           class="record"
           v-for="item in restaurants"
@@ -46,9 +46,9 @@
       display: none;
     }
     .record-group {
-      background-color: #ebebeb;
+      //background-color: #ebebeb;
       max-height: calc(100vh - 200px);
-      overflow-y: scroll;
+      overflow-y: auto;
       &::-webkit-scrollbar-track {
         border: 1px solid #dddddd;
         background-color: white;
@@ -68,9 +68,12 @@
       .record {
         position: relative;
         padding: 0 10px;
-      }
-      .borderblack {
-        border: 1px solid black;
+        border-top: 1px solid grey;
+        .restaurant-name {
+          &:hover {
+            cursor: pointer;
+          }
+        }
       }
     }
   }
@@ -97,6 +100,9 @@
             display: none;
           }
         }
+        .borderblack {
+          border: 1px solid black;
+        }
       }
     }
   }
@@ -110,7 +116,6 @@
       }
       .record-group {
         .record {
-          border-top: 1px solid #dddddd;
           svg {
             margin: auto 10%;
           }
@@ -137,20 +142,35 @@ import { onBeforeMount, reactive, ref } from "vue";
 import dayjs from "dayjs";
 
 const restaurants: restaurantFullRecord[] = reactive([]);
+// control which restaurant detail is displayed when using mobile
 const displayId = ref(-1);
 
 function formatDate(originalDate: string) {
   return dayjs(originalDate).format("YYYY/MM/DD HH:mm");
 }
 
-async function deleteRecord(e: Event) {
-  const target = e.target as HTMLElement;
-  if (target.tagName === "svg") return console.log("delete", target.dataset.id);
-  if (target.classList.contains("restaurant-name")) {
+async function handleRecord(e: Event) {
+  try {
+    const target = e.target as HTMLElement;
     const currentId = Number(target.dataset.id);
-    displayId.value === currentId
-      ? (displayId.value = -1)
-      : (displayId.value = currentId);
+    // if delete button is clicked
+    if (target.tagName === "svg") {
+      const { data } = await restaurantsAPI.deleteRecord(currentId);
+      if (data.status !== "success") throw new Error(data.message);
+      return restaurants.forEach((item: restaurantFullRecord, idx, arr) => {
+        if (item.id === currentId) {
+          arr.splice(idx, 1);
+        }
+      });
+    }
+    // if name is clicked
+    if (target.classList.contains("restaurant-name")) {
+      return displayId.value === currentId
+        ? (displayId.value = -1)
+        : (displayId.value = currentId);
+    }
+  } catch (error) {
+    console.log(error);
   }
 }
 
