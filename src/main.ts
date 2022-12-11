@@ -6,6 +6,7 @@ import "@/assets/style.scss";
 import App from "./App.vue";
 import router from "./router";
 
+// font awesome settings
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import {
@@ -13,10 +14,21 @@ import {
   faFloppyDisk,
   faX,
 } from "@fortawesome/free-solid-svg-icons";
+library.add(faLocationCrosshairs, faFloppyDisk, faX);
 
 import vue3GoogleLogin from "vue3-google-login";
 
-library.add(faLocationCrosshairs, faFloppyDisk, faX);
+// firebase config
+import { initializeApp } from "firebase/app";
+const firebaseConfig = {
+  apiKey: import.meta.env.VITE_APIKEY,
+  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_APP_ID,
+};
+const fireBaseApp = initializeApp(firebaseConfig);
 
 const app = createApp(App).component("fa-icon", FontAwesomeIcon);
 
