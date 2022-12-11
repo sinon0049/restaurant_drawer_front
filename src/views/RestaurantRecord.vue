@@ -22,9 +22,18 @@
             item.name
           }}</span>
           <div class="detail" :class="{ hide: displayId !== item.id }">
-            <span>{{ item.address }}</span>
-            <span>{{ item.phone }}</span>
-            <span>{{ formatDate(item.createdAt) }}</span>
+            <span class="mobile-grey">
+              <span class="mobile-only">&nbsp;&nbsp;&nbsp;Address: </span>
+              {{ item.address }}
+            </span>
+            <span class="mobile-grey">
+              <span class="mobile-only">&nbsp;&nbsp;&nbsp;Phone: </span>
+              {{ item.phone }}
+            </span>
+            <span class="mobile-grey">
+              <span class="mobile-only">&nbsp;&nbsp;&nbsp;Date: </span>
+              {{ formatDate(item.createdAt) }}
+            </span>
           </div>
           <fa-icon icon="x" size="xl" :data-id="item.id" />
         </div>
@@ -90,6 +99,9 @@
             width: 100%;
             position: relative;
             bottom: -100%;
+            .mobile-grey {
+              color: #3b3939;
+            }
           }
           svg {
             position: absolute;
@@ -118,6 +130,11 @@
         .record {
           svg {
             margin: auto 10%;
+          }
+          .detail {
+            .mobile-only {
+              display: none;
+            }
           }
         }
       }
