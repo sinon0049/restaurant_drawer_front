@@ -264,6 +264,7 @@ import { reactive } from "vue";
 import type { facebookResponse, updatedPassword } from "env";
 //import { useRouter } from "vue-router";
 import { googleTokenLogin } from "vue3-google-login";
+import { swalAlert } from "@/utils/helper";
 
 //const router = useRouter();
 const store = userStore();
@@ -293,6 +294,9 @@ function startEdit(attribute: string) {
 function cancelEdit() {
   store.profile.name = profileTempStore.name;
   store.profile.email = profileTempStore.email;
+  password.currentPwd = "";
+  password.confirmPwd = "";
+  password.newPwd = "";
   editStatus.currentEditing = "";
 }
 
@@ -309,6 +313,7 @@ async function commitEdit() {
       if (data.status !== "success") return console.log(data.message);
       // enable button and close input after receiving response
       editStatus.currentEditing = "";
+      swalAlert.successMsg(data.message);
     } else if (editStatus.currentEditing === "email") {
       if (!store.profile.email.trim())
         return console.log("please type your email");
@@ -320,6 +325,7 @@ async function commitEdit() {
       if (data.status !== "success") return console.log(data.message);
       // enable button and close input after receiving response
       editStatus.currentEditing = "";
+      swalAlert.successMsg(data.message);
     }
   } catch (error) {
     console.log(error);
@@ -335,14 +341,14 @@ async function disconnectSocialAccount(accountFrom: string) {
     );
     if (!res) return;
     if (!store.profile.isPwdSet)
-      return console.log("Please set your password.");
+      return swalAlert.errorMsg("Please set your password first.");
     const payLoad =
       accountFrom === "facebook" ? { facebookId: "" } : { googleId: "" };
     const { data } = await usersAPI.updateProfile(payLoad);
     if (data.status !== "success") return console.log(data.message);
     if (accountFrom === "facebook") store.profile.facebookId = "";
     else if (accountFrom === "google") store.profile.googleId = "";
-    console.log(data.user);
+    swalAlert.successMsg("Account disconnected successfully.");
   } catch (error) {
     console.log(error);
   }
@@ -376,16 +382,16 @@ async function connectGoogleAccount() {
 async function updatePassword() {
   try {
     if (!password.currentPwd.trim() && store.profile.isPwdSet)
-      return console.log("please type your password");
+      return swalAlert.errorMsg("Please type your password.");
     if (!password.newPwd.trim())
-      return console.log("please type your password");
+      return swalAlert.errorMsg("Please type your password.");
     if (password.newPwd !== password.confirmPwd)
-      return console.log("please confirm your password");
+      return swalAlert.errorMsg("Please confirm your password.");
     const { data } = await usersAPI.updatePassword(password);
-    if (data.status !== "success") return console.log(data.message);
+    if (data.status !== "success") return swalAlert.errorMsg(data.message);
     store.profile.isPwdSet = true;
     editStatus.currentEditing = "";
-    console.log(data);
+    swalAlert.successMsg(data.message);
   } catch (error) {
     console.log(error);
   }

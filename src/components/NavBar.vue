@@ -118,6 +118,7 @@
 import { useRouter } from "vue-router";
 import { userStore } from "@/stores/user";
 import { ref } from "vue";
+import { swalAlert } from "@/utils/helper";
 
 const router = useRouter();
 const store = userStore();
@@ -127,6 +128,7 @@ function signOut() {
   localStorage.removeItem("token");
   store.cleanUser();
   router.push("/signin");
+  swalAlert.successMsg("Sign out successfully.");
   FB.getLoginStatus((res) => {
     if (res.status === "connected") FB.logout();
   });

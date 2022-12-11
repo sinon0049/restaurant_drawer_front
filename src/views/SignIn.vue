@@ -95,6 +95,7 @@ import { useRouter } from "vue-router";
 import { reactive } from "vue";
 import type { facebookResponse } from "env";
 import { googleTokenLogin } from "vue3-google-login";
+import { swalAlert } from "@/utils/helper";
 
 const signInData = reactive({
   email: "",
@@ -104,12 +105,15 @@ const router = useRouter();
 
 async function signIn() {
   try {
-    if (!signInData.email.trim()) return console.log("Please type your email.");
-    if (!signInData.password) return console.log("Please type your password.");
+    if (!signInData.email.trim())
+      return swalAlert.errorMsg("Please type your email.");
+    if (!signInData.password)
+      return swalAlert.errorMsg("Please type your password.");
     const { data } = await usersAPI.signIn(signInData);
     if (data.status !== "success") throw new Error(data.message);
     localStorage.setItem("token", data.token);
     router.push("/restdraw");
+    swalAlert.successMsg("Sign in successfully.");
   } catch (error) {
     console.log(error);
   }
@@ -127,7 +131,8 @@ function handleFacebookSignIn() {
           return router.push("/oauthsignup");
         }
         localStorage.setItem("token", data.token);
-        return router.push("/restdraw");
+        router.push("/restdraw");
+        swalAlert.successMsg("Sign in successfully.");
       });
     }
   });
@@ -142,7 +147,7 @@ async function handleGoogleSignin() {
       return router.push("/oauthsignup");
     }
     localStorage.setItem("token", data.token);
-    return router.push("/restdraw");
+    swalAlert.successMsg("Sign in successfully.");
   } catch (error) {
     console.log(error);
   }

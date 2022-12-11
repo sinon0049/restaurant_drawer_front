@@ -109,6 +109,7 @@
 import { usersAPI } from "@/apis/user";
 import { useRouter } from "vue-router";
 import { reactive } from "vue";
+import { swalAlert } from "@/utils/helper";
 
 const signUpData = reactive({
   name: "",
@@ -120,16 +121,19 @@ const router = useRouter();
 
 async function signUp() {
   try {
-    if (!signUpData.name.trim()) return console.log("Please type your name.");
-    if (!signUpData.email.trim()) return console.log("Please type your email.");
-    if (!signUpData.password) return console.log("Please type your password.");
+    if (!signUpData.name.trim())
+      return swalAlert.errorMsg("Please type your name.");
+    if (!signUpData.email.trim())
+      return swalAlert.errorMsg("Please type your email.");
+    if (!signUpData.password)
+      return swalAlert.errorMsg("Please type your password.");
     if (!signUpData.confirmPassword)
-      return console.log("Please confirm your password.");
+      return swalAlert.errorMsg("Please confirm your password.");
     if (signUpData.password !== signUpData.confirmPassword)
-      return console.log("Passwords are not match.");
+      return swalAlert.errorMsg("Passwords are not match.");
     const { data } = await usersAPI.signUp(signUpData);
     if (data.status !== "success") throw new Error(data.message);
-    console.log("Sign up successfully.");
+    swalAlert.successMsg("Sign up successfully.");
     router.push("/signin");
   } catch (error) {
     console.log(error);
