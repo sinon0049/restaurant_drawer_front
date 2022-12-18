@@ -362,6 +362,7 @@ async function connectFacebookAccount() {
         const { data } = await usersAPI.updateProfile(payLoad);
         if (data.status !== "success") return console.log(data.message);
         store.profile.facebookId = data.user.facebookId;
+        swalAlert.successMsg("Account connected successfully.");
         FB.logout();
       });
     }
@@ -374,6 +375,7 @@ async function connectGoogleAccount() {
     const { data } = await usersAPI.updateProfile({ access_token });
     if (data.status !== "success") return console.log(data.message);
     store.profile.googleId = data.user.googleId;
+    swalAlert.successMsg("Account connected successfully.");
   } catch (error) {
     console.log(error);
   }

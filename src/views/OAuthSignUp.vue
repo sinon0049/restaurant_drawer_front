@@ -22,7 +22,8 @@
       />
     </div>
     <div class="btn-group">
-      <button @click="OAuthsignUp" id="fb-sign-in">Sign up</button>
+      <button @click="OAuthsignUp">Sign up</button>
+      <button @click="toPrevPage">Cancel</button>
     </div>
   </div>
 </template>
@@ -57,20 +58,8 @@
         cursor: pointer;
       }
     }
-    .g-btn-wrapper {
-      margin: 0 auto;
-    }
     a {
       text-align: center;
-    }
-    #sign-in {
-      color: white;
-      background-color: #20222a;
-    }
-    #sign-up {
-      color: #20222a;
-      background-color: white;
-      border: 1px solid #20222a;
     }
   }
 }
@@ -88,6 +77,7 @@ import { useRouter } from "vue-router";
 import type { OAuthSignUpData } from "env";
 import { onBeforeMount, onBeforeUnmount, reactive } from "vue";
 import { usersAPI } from "@/apis/user";
+import { swalAlert } from "@/utils/helper";
 
 const signUpData: OAuthSignUpData = reactive({
   name: "",
@@ -104,10 +94,14 @@ async function OAuthsignUp() {
     const { data } = await usersAPI.OAuthSignUp(signUpData);
     if (data.status !== "success") return console.log(data.message);
     router.push("/signin");
-    console.log(data);
+    return swalAlert.successMsg("Sign up successfully.");
   } catch (error) {
     console.log(error);
   }
+}
+
+function toPrevPage() {
+  return router.push("/signin");
 }
 
 onBeforeMount(() => {

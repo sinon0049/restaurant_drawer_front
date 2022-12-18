@@ -157,6 +157,7 @@ import { restaurantsAPI } from "@/apis/restaurant";
 import type { restaurantFullRecord } from "env";
 import { onBeforeMount, reactive, ref } from "vue";
 import dayjs from "dayjs";
+import { swalAlert } from "@/utils/helper";
 
 const restaurants: restaurantFullRecord[] = reactive([]);
 // control which restaurant detail is displayed when using mobile
@@ -174,11 +175,12 @@ async function handleRecord(e: Event) {
     if (target.tagName === "svg") {
       const { data } = await restaurantsAPI.deleteRecord(currentId);
       if (data.status !== "success") throw new Error(data.message);
-      return restaurants.forEach((item: restaurantFullRecord, idx, arr) => {
+      restaurants.forEach((item: restaurantFullRecord, idx, arr) => {
         if (item.id === currentId) {
           arr.splice(idx, 1);
         }
       });
+      return swalAlert.successMsg(data.message);
     }
     // if name is clicked
     if (target.classList.contains("restaurant-name")) {
