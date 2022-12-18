@@ -34,3 +34,4 @@ coverage
 #firebase config
 .firebaserc
 firebase.json
+.firebase
