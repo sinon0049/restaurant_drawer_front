@@ -147,6 +147,7 @@ async function handleGoogleSignin() {
       return router.push("/oauthsignup");
     }
     localStorage.setItem("token", data.token);
+    router.push("/restdraw");
     swalAlert.successMsg("Sign in successfully.");
   } catch (error) {
     console.log(error);
