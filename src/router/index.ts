@@ -5,12 +5,18 @@ import RestDraw from "../views/RestDraw.vue";
 import OAuthSignUp from "@/views/OAuthSignUp.vue";
 import UserProfile from "@/views/UserProfile.vue";
 import RestaurantRecord from "@/views/RestaurantRecord.vue";
+import HomePage from "@/views/HomePage.vue";
 import { usersAPI } from "@/apis/user";
 import { userStore } from "@/stores/user";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: "/",
+      name: "home-page",
+      component: HomePage,
+    },
     {
       path: "/signin",
       name: "sign-in",
@@ -45,7 +51,7 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  const pathWithoutAuth = ["/signin", "/signup", "/oauthsignup"];
+  const pathWithoutAuth = ["/signin", "/signup", "/oauthsignup", "/"];
   const token = localStorage.getItem("token");
   const store = userStore();
   if (token && pathWithoutAuth.includes(to.fullPath)) {
