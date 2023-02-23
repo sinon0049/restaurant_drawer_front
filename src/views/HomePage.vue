@@ -2,6 +2,7 @@
   <div class="card-container">
     <div class="card">Card1</div>
     <div class="card">Card2</div>
+    <div class="card">Card3</div>
     <button @click="slide('prev')">lb</button>
     <button class="r" @click="slide('next')">rb</button>
   </div>
@@ -15,7 +16,7 @@
   &::-webkit-scrollbar {
     //display: none;
   }
-  width: 200%;
+  width: 300%;
   height: calc(100vh - 3rem - 300px);
   .card {
     display: inline-block;
@@ -23,10 +24,17 @@
     height: 100%;
   }
   .card:nth-child(1) {
-    background-color: yellow;
+    background-color: grey;
+  }
+  .card:nth-child(2) {
+    background-color: orangered;
+  }
+  .card:nth-child(3) {
+    background-color: green;
   }
   button {
     position: absolute;
+    top: 50%;
   }
   .r {
     right: 0;
