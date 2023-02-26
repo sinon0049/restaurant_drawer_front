@@ -46,7 +46,6 @@
     bottom: 350px;
     right: calc(50% - 50px);
     a {
-      
     }
   }
 }

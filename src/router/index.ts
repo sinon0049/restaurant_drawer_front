@@ -51,10 +51,18 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  const pathWithoutAuth = ["/signin", "/signup", "/oauthsignup", "/", "/#card-1", "/#card-2", "/#card-3"];
+  const pathWithoutAuth = [
+    "/signin",
+    "/signup",
+    "/oauthsignup",
+    "/",
+    "/#card-1",
+    "/#card-2",
+    "/#card-3",
+  ];
   const token = localStorage.getItem("token");
   const store = userStore();
-  console.log(to.fullPath)
+  console.log(to.fullPath);
   if (token && pathWithoutAuth.includes(to.fullPath)) {
     const { data } = await usersAPI.getCurrentUser();
     store.storeUser(data);
