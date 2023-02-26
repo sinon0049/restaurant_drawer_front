@@ -1,12 +1,12 @@
 <template>
-  <div class="card-container">
+  <div class="card-container" @scroll="test">
     <div class="card" id="card-1">Card1</div>
     <div class="card" id="card-2">Card2</div>
     <div class="card" id="card-3">Card3</div>
-    <div class="a-group">
-      <a href="#card-1">1</a>
-      <a href="#card-2">2</a>
-      <a href="#card-3">3</a>
+    <div class="btn-group" @click="slide">
+      <button data-id="1">1</button>
+      <button data-id="2">2</button>
+      <button data-id="3">3</button>
     </div>
   </div>
   <footer>This is footer.</footer>
@@ -16,14 +16,16 @@
 .card-container {
   position: relative;
   display: flex;
-  overflow: hidden;
+  overflow: scroll;
+  scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
   &::-webkit-scrollbar {
-    //display: none;
+    display: none;
   }
   width: 100%;
   height: calc(100vh - 3rem - 300px);
   .card {
+    scroll-snap-align: start;
     display: block;
     width: 100%;
     height: 100%;
@@ -38,14 +40,15 @@
   .card:nth-child(3) {
     background-color: green;
   }
-  .a-group {
+  .btn-group {
     position: fixed;
     display: flex;
     width: 100px;
     justify-content: space-between;
     bottom: 350px;
     right: calc(50% - 50px);
-    a {
+    button {
+      cursor: pointer;
     }
   }
 }
@@ -62,16 +65,27 @@ footer {
 </style>
 
 <script lang="ts" setup>
-let transformNum = 0;
-function slide(direction: string) {
-  const cards = document.querySelectorAll<HTMLDivElement>(".card");
-  console.log(cards);
-  if (direction === "next") transformNum -= 100;
-  else transformNum += 100;
+let cardNum = 1;
 
-  cards.forEach((card) => {
-    console.log(card);
-    card.style.transform = `translateX(${transformNum}%)`;
-  });
+function slide(e: Event) {
+  const target = e.target as HTMLElement;
+  const cardContainer =
+    document.querySelector<HTMLDivElement>(".card-container");
+  const btn = document.querySelectorAll<HTMLButtonElement>("button");
+  if (target.tagName === "BUTTON") {
+    cardNum = Number(target.dataset.id);
+    if (cardContainer) {
+      cardContainer.scrollLeft =
+        (cardNum - 1) * document.documentElement.scrollWidth;
+    }
+    btn.forEach((b: HTMLButtonElement) => {
+      if (Number(b.dataset.id) === cardNum) b.classList.add("active");
+      else b.classList.remove("active");
+    });
+  }
+}
+
+function test(e: Event) {
+  
 }
 </script>
