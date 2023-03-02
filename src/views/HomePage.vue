@@ -1,12 +1,12 @@
 <template>
-  <div class="card-container" @scroll="test">
-    <div class="card" id="card-1">Card1</div>
-    <div class="card" id="card-2">Card2</div>
-    <div class="card" id="card-3">Card3</div>
-    <div class="btn-group" @click="slide">
-      <button data-id="1">1</button>
-      <button data-id="2">2</button>
-      <button data-id="3">3</button>
+  <div class="card-container">
+    <div class="card" id="card-1" data-id="1"><h1>card1</h1></div>
+    <div class="card" id="card-2" data-id="2"><h1>card2</h1></div>
+    <div class="card" id="card-3" data-id="3"><h1>card3</h1></div>
+    <div class="btn-group" @click="clickEvent">
+      <div class="btn" data-id="1"></div>
+      <div class="btn" data-id="2"></div>
+      <div class="btn" data-id="3"></div>
     </div>
   </div>
   <footer>This is footer.</footer>
@@ -31,24 +31,25 @@
     height: 100%;
     flex-shrink: 0;
   }
-  .card:nth-child(1) {
-    background-color: grey;
-  }
-  .card:nth-child(2) {
-    background-color: orangered;
-  }
-  .card:nth-child(3) {
-    background-color: green;
-  }
   .btn-group {
     position: fixed;
     display: flex;
-    width: 100px;
+    width: 80px;
     justify-content: space-between;
     bottom: 350px;
-    right: calc(50% - 50px);
-    button {
+    right: calc(50% - 40px);
+    div {
+      display: flex;
       cursor: pointer;
+      width: 10px;
+      height: 10px;
+      border: 1px solid grey;
+      border-radius: 50%;
+      background-color: transparent;
+      flex-shrink: 0;
+    }
+    .active {
+      background-color: grey;
     }
   }
 }
@@ -65,27 +66,45 @@ footer {
 </style>
 
 <script lang="ts" setup>
-let cardNum = 1;
+import { onMounted } from "vue";
 
-function slide(e: Event) {
+//change card when clicking button
+let cardNum = 1;
+function clickEvent(e: Event) {
   const target = e.target as HTMLElement;
   const cardContainer =
     document.querySelector<HTMLDivElement>(".card-container");
-  const btn = document.querySelectorAll<HTMLButtonElement>("button");
-  if (target.tagName === "BUTTON") {
+  const btn = document.querySelectorAll<HTMLDivElement>(".btn");
+  if (target.classList.contains("btn")) {
     cardNum = Number(target.dataset.id);
     if (cardContainer) {
       cardContainer.scrollLeft =
         (cardNum - 1) * document.documentElement.scrollWidth;
     }
-    btn.forEach((b: HTMLButtonElement) => {
+    btn.forEach((b: HTMLDivElement) => {
       if (Number(b.dataset.id) === cardNum) b.classList.add("active");
       else b.classList.remove("active");
     });
   }
 }
 
-function test(e: Event) {
-  
-}
+// change style of button when scrolling
+onMounted(() => {
+  const btn = document.querySelectorAll<HTMLDivElement>(".btn");
+  const observeCb = function (entries: IntersectionObserverEntry[]) {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const target = entry.target as HTMLDivElement;
+        const id = target.dataset.id;
+        btn.forEach((b) => {
+          if (b.dataset.id === id) b.classList.add("active");
+          else b.classList.remove("active");
+        });
+      }
+    });
+  };
+  const scrollEvent = new IntersectionObserver(observeCb, { threshold: 0.5 });
+  const cards = document.querySelectorAll<HTMLDivElement>(".card");
+  cards.forEach((card) => scrollEvent.observe(card));
+});
 </script>
