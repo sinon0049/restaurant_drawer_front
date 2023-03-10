@@ -41,7 +41,6 @@
       <div class="btn" data-id="3"></div>
     </div>
   </main>
-  <footer>This is footer.</footer>
 </template>
 
 <style lang="scss" scoped>
@@ -113,7 +112,7 @@
     display: none;
   }
   width: 100%;
-  height: calc(100vh - 3rem - 100px);
+  height: 80vh;
   .card {
     scroll-snap-align: start;
     display: flex;
@@ -150,7 +149,7 @@
     display: flex;
     width: 50px;
     justify-content: space-between;
-    bottom: 150px;
+    bottom: 50px;
     right: calc(50% - 25px);
     div {
       display: flex;
@@ -166,16 +165,6 @@
       background-color: grey;
     }
   }
-}
-
-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100vw;
-  height: 100px;
-  background-color: rgba(46, 44, 50, 1);
-  color: white;
 }
 </style>
 
