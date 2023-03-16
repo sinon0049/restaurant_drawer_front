@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar">
-    <span id="title">Restaurant Drawer</span>
+    <router-link to="/" id="title">Restaurant Drawer</router-link>
     <div
       class="btn-group"
       v-if="store.profile.id !== -1"
@@ -17,7 +17,7 @@
       </router-link>
       <span @click="signOut">Signout</span>
     </div>
-    <div id="navbar-control-container" @click="toggleNavbar">
+    <div id="navbar-control-container" @click="toggleNavbar" v-if="store.profile.id !== -1">
       <div id="navbar-control"></div>
     </div>
   </nav>
@@ -35,6 +35,9 @@
   position: relative;
   #title {
     margin-left: 20px;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
   }
   .btn-group {
     z-index: 20;
@@ -127,7 +130,7 @@ const isNavbarOpen = ref(false);
 function signOut() {
   localStorage.removeItem("token");
   store.cleanUser();
-  router.push("/signin");
+  router.push("/");
   swalAlert.successMsg("Sign out successfully.");
   FB.getLoginStatus((res) => {
     if (res.status === "connected") FB.logout();
