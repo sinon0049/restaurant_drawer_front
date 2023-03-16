@@ -17,7 +17,11 @@
       </router-link>
       <span @click="signOut">Signout</span>
     </div>
-    <div id="navbar-control-container" @click="toggleNavbar" v-if="store.profile.id !== -1">
+    <div
+      id="navbar-control-container"
+      @click="toggleNavbar"
+      v-if="store.profile.id !== -1"
+    >
       <div id="navbar-control"></div>
     </div>
   </nav>

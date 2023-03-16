@@ -12,6 +12,26 @@ html {
             button {
                 font-family: 'Noto Sans TC', '微軟正黑體', sans-serif;
             }
+            .input-group {
+                display: flex;
+                flex-direction: column;
+                height: 40px;
+                margin: {
+                    bottom: 20px;
+                }
+                input {
+                    height: 100%;
+                    border-radius: 3px;
+                    border: 1px solid grey;
+                    padding: {
+                    left: 5px;
+                    right: 5px;
+                    }
+                    &:focus {
+                    outline: 1px solid black;
+                    }
+                }
+            }
         }
         #app, .swal2-popup {
             font-family: 'Noto Sans TC', '微軟正黑體', sans-serif;

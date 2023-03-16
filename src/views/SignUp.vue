@@ -2,46 +2,45 @@
   <div class="container">
     <h2>Sign Up</h2>
     <div class="input-group">
-      <label for="input-name" class="form-label">Name</label>
       <input
         type="text"
         class="form-control"
         id="input-name"
+        placeholder="Username"
         v-model="signUpData.name"
       />
     </div>
     <div class="input-group">
-      <label for="input-email" class="form-label">Email address</label>
       <input
         type="email"
         class="form-control"
         id="input-email"
+        placeholder="Email"
         v-model="signUpData.email"
       />
     </div>
     <div class="input-group">
-      <label for="input-password" class="form-label">password</label>
       <input
         type="password"
         class="form-control"
         id="input-password"
+        placeholder="Password"
         v-model="signUpData.password"
       />
     </div>
     <div class="input-group">
-      <label for="input-confirm-password" class="form-label"
-        >Confirm password</label
-      >
       <input
         type="password"
         class="form-control"
         id="input-confirm-password"
+        placeholder="Confirm Password"
         v-model="signUpData.confirmPassword"
       />
     </div>
     <div class="btn-group">
-      <button id="sign-up" @click="signUp">Sign Up</button>
-      <router-link to="/signin"> cancel </router-link>
+      <button @click="signUp">Sign Up</button>
+      <p>Have an account? <router-link to="/signin">Sign In</router-link></p>
+      <!-- <router-link to="/signin"> cancel </router-link> -->
     </div>
   </div>
 </template>
@@ -54,23 +53,20 @@
     text-align: center;
     margin-top: 2rem;
   }
-  .input-group {
-    display: flex;
-    flex-direction: column;
-    margin: 0 auto 1% auto;
-    line-height: 2rem;
-  }
   .btn-group {
     height: 20%;
     display: flex;
     flex-direction: column;
     margin-top: 1rem;
+    text-align: center;
     button {
-      width: 80px;
+      width: 150px;
       height: 30px;
       margin: 1rem auto 0 auto;
       border: 0;
       border-radius: 3px;
+      background-color: #20222a;
+      color: white;
       &:hover {
         cursor: pointer;
       }
@@ -84,15 +80,6 @@
         text-decoration: underline;
         cursor: pointer;
       }
-    }
-    #sign-in {
-      color: white;
-      background-color: #20222a;
-    }
-    #sign-up {
-      color: #20222a;
-      background-color: white;
-      border: 1px solid #20222a;
     }
   }
 }

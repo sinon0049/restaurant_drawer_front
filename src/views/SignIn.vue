@@ -2,20 +2,20 @@
   <div class="container">
     <h2>Sign In</h2>
     <div class="input-group">
-      <label for="input-email" class="form-label">Email</label>
       <input
         type="email"
         class="form-control"
         id="input-email"
+        placeholder="Email"
         v-model="signInData.email"
       />
     </div>
     <div class="input-group">
-      <label for="input-password" class="form-label">Password</label>
       <input
         type="password"
         class="form-control"
         id="input-password"
+        placeholder="Password"
         v-model="signInData.password"
         @keyup.enter="signIn"
       />
@@ -25,10 +25,11 @@
       <router-link to="/signup">
         <button id="sign-up">Sign Up</button>
       </router-link>
-      <button @click="handleFacebookSignIn" id="fb-sign-in">
-        Signin with Facebook
-      </button>
-      <button @click="handleGoogleSignin">Signin with Google</button>
+      <p>Or you can sign in with</p>
+      <div class="brand-icons">
+        <fa-icon :icon="['fab', 'google']" @click="handleGoogleSignin" />
+        <fa-icon :icon="['fab', 'facebook']" @click="handleFacebookSignIn" />
+      </div>
     </div>
   </div>
 </template>
@@ -41,17 +42,13 @@
     text-align: center;
     margin-top: 2rem;
   }
-  .input-group {
-    display: flex;
-    flex-direction: column;
-    margin: 0 auto 1% auto;
-    line-height: 2rem;
-  }
   .btn-group {
     height: 20%;
     display: flex;
     flex-direction: column;
     margin-top: 1rem;
+    text-align: center;
+    align-items: center;
     button {
       width: 150px;
       height: 30px;
@@ -61,9 +58,6 @@
       &:hover {
         cursor: pointer;
       }
-    }
-    .g-btn-wrapper {
-      margin: 0 auto;
     }
     a {
       text-align: center;
@@ -76,6 +70,33 @@
       color: #20222a;
       background-color: white;
       border: 1px solid #20222a;
+    }
+    .brand-icons {
+      width: 100px;
+      display: flex;
+      justify-content: space-around;
+      svg {
+        border-radius: 99rem;
+        cursor: pointer;
+      }
+      svg:nth-child(1) {
+        &:hover {
+          background-color: #db4437;
+        }
+        background-color: grey;
+        color: white;
+        width: 20px;
+        height: 20px;
+        padding: 5px;
+      }
+      svg:nth-child(2) {
+        &:hover {
+          color: #3b5998;
+        }
+        color: grey;
+        width: 30px;
+        height: 30px;
+      }
     }
   }
 }
