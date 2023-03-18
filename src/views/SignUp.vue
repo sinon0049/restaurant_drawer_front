@@ -40,7 +40,6 @@
     <div class="btn-group">
       <button @click="signUp">Sign Up</button>
       <p>Have an account? <router-link to="/signin">Sign In</router-link></p>
-      <!-- <router-link to="/signin"> cancel </router-link> -->
     </div>
   </div>
 </template>

@@ -1,29 +1,29 @@
 <template>
   <div class="container">
-    <h2>Last Step!</h2>
+    <h2>Jusy One Step Away!</h2>
     <h3>Register your name and email for our service.</h3>
     <div class="input-group">
-      <label for="input-name" class="form-label">Name</label>
       <input
         type="text"
         class="form-control"
         id="input-name"
+        placeholder="Username"
         v-model="signUpData.name"
       />
     </div>
     <div class="input-group">
-      <label for="input-email" class="form-label">Email</label>
       <input
         type="email"
         class="form-control"
         id="input-email"
+        placeholder="Email"
         v-model="signUpData.email"
         @keyup.enter="OAuthsignUp"
       />
     </div>
     <div class="btn-group">
-      <button @click="OAuthsignUp">Sign up</button>
-      <button @click="toPrevPage">Cancel</button>
+      <button id="sign-in" @click="OAuthsignUp">Sign Up</button>
+      <button id="sign-up" @click="toPrevPage">Cancel</button>
     </div>
   </div>
 </template>
@@ -57,6 +57,15 @@
       &:hover {
         cursor: pointer;
       }
+    }
+    #sign-in {
+      color: white;
+      background-color: #20222a;
+    }
+    #sign-up {
+      color: #20222a;
+      background-color: white;
+      border: 1px solid #20222a;
     }
     a {
       text-align: center;
