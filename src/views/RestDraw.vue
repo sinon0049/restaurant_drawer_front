@@ -5,7 +5,7 @@
       id="draw"
       :disabled="isProcessing"
     >
-      draw
+      <fa-icon icon="dice" />
     </button>
     <div
       id="map"
@@ -16,12 +16,13 @@
       class="rest-detail"
       :class="{ detailDrawed: isDetailDisplaying === true }"
     >
-      <fa-icon
-        @click.stop.prevent="getCurrentLocation"
-        icon="location-crosshairs"
-        size="3x"
+      <span
+        class="material-symbols-outlined"
         id="locate"
-      />
+        @click.stop.prevent="getCurrentLocation"
+      >
+        my_location
+      </span>
       <img
         :src="restaurant.photo"
         alt=""
@@ -103,14 +104,18 @@
     }
   }
   #locate {
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
     z-index: 10;
-    color: #20222a;
-    background-color: white;
+    color: white;
+    background-color: #20222a;
     position: absolute;
     top: -60px;
     right: 10px;
     border-radius: 50%;
-    box-shadow: 2px 2px 3px #696969;
+    cursor: pointer;
   }
   .mapDrawed {
     height: 60%;
@@ -180,6 +185,7 @@ const location_user = reactive({
 const isDetailDisplaying = ref(false);
 const isProcessing = ref(false);
 
+let g: typeof google;
 let map: google.maps.Map;
 let marker: google.maps.Marker;
 let circle: google.maps.Circle;
@@ -187,42 +193,18 @@ let placesService: google.maps.places.PlacesService;
 
 async function getCurrentLocation() {
   try {
-    const google = await loader.load();
-    const mapEl = document.getElementById("map") as HTMLDivElement;
+    //get latlng of current position
     navigator.geolocation.getCurrentPosition((pos) => {
       location_user.lat = pos.coords.latitude;
       location_user.lng = pos.coords.longitude;
 
-      //init map
-      if (mapEl) {
-        if (!map) {
-          map = new google.maps.Map(mapEl, {
-            center: location_user,
-            zoom: 18,
-            disableDefaultUI: true,
-          });
-        } else {
-          //smoothly move map if user click locate button
-          map.panTo(location_user);
-        }
-
-        //init marker
-        marker = new google.maps.Marker({
-          position: location_user,
-          map: map,
-        });
-        //init circle
-        circle = new google.maps.Circle({
-          map: map,
-          center: location_user,
-          radius: 100,
-          strokeWeight: 1.5,
-          strokeColor: "#1ed0f4",
-          fillColor: "#82e0f3",
-        });
-        //init placesService
-        placesService = new google.maps.places.PlacesService(map);
-      }
+      //set map, circle, marker to center
+      map.panTo(location_user);
+      circle.setCenter(location_user);
+      marker = new g.maps.Marker({
+        position: location_user,
+        map: map,
+      });
     });
   } catch (error) {
     console.log(error);
@@ -288,8 +270,39 @@ async function drawRandomRestaurant() {
     });
   } catch (error) {
     console.log(error);
+  } finally {
+    isProcessing.value = false;
   }
 }
 
-onMounted(() => getCurrentLocation());
+async function initializeMap() {
+  try {
+    const mapEl = document.getElementById("map") as HTMLDivElement;
+    g = await loader.load();
+    //init map
+    if (mapEl) {
+      map = new google.maps.Map(mapEl, {
+        zoom: 18,
+        disableDefaultUI: true,
+      });
+      //init circle
+      circle = new google.maps.Circle({
+        map: map,
+        radius: 100,
+        strokeWeight: 1.5,
+        strokeColor: "#1ed0f4",
+        fillColor: "#82e0f3",
+      });
+      //init placesService
+      placesService = new google.maps.places.PlacesService(map);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+onMounted(() => {
+  initializeMap();
+  getCurrentLocation();
+});
 </script>

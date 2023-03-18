@@ -13,9 +13,17 @@ import {
   faLocationCrosshairs,
   faFloppyDisk,
   faX,
+  faDice,
 } from "@fortawesome/free-solid-svg-icons";
 import { faFacebook, faGoogle } from "@fortawesome/free-brands-svg-icons";
-library.add(faLocationCrosshairs, faFloppyDisk, faX, faFacebook, faGoogle);
+library.add(
+  faLocationCrosshairs,
+  faFloppyDisk,
+  faX,
+  faFacebook,
+  faGoogle,
+  faDice
+);
 
 import vue3GoogleLogin from "vue3-google-login";
 
