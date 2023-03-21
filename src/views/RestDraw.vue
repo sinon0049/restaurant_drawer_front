@@ -1,12 +1,22 @@
 <template>
   <div class="container">
-    <button
-      @click.stop.prevent="drawRandomRestaurant"
-      id="draw"
-      :disabled="isProcessing"
-    >
-      <fa-icon icon="dice" />
-    </button>
+    <div class="draw-control">
+      <button @click="drawRandomRestaurant" id="draw" :disabled="isProcessing">
+        <fa-icon icon="dice" v-if="!isProcessing" />
+        <div class="spinner" v-else></div>
+      </button>
+      <div>
+        <span>Radius</span>
+        <input
+          type="number"
+          id="radius"
+          placeholder="Unit: Meter"
+          min="0"
+          v-model="radius"
+          @input="zoomCircle"
+        />
+      </div>
+    </div>
     <div
       id="map"
       class="map"
@@ -19,7 +29,7 @@
       <span
         class="material-symbols-outlined"
         id="locate"
-        @click.stop.prevent="getCurrentLocation"
+        @click="getCurrentLocation"
       >
         my_location
       </span>
@@ -30,10 +40,10 @@
       />
       <div
         class="detail-container"
-        :class="{ detailContainerDisplaying: isDetailDisplaying === true }"
+        :class="{ detailDisplaying: isDetailDisplaying === true }"
       >
         <span>name:&nbsp;&nbsp;{{ restaurant.name }}</span>
-        <span>address:&nbsp;&nbsp;{{ restaurant.addr }}</span>
+        <span>address:&nbsp;&nbsp;{{ restaurant.address }}</span>
         <span>rating:&nbsp;&nbsp;{{ restaurant.rating }}</span>
         <span>phone:&nbsp;&nbsp;{{ restaurant.phone }}</span>
       </div>
@@ -79,28 +89,70 @@
     .imgDisplaying {
       display: block;
     }
-    .detailContainerDisplaying {
+    .detailDisplaying {
       display: flex;
     }
   }
-  #draw {
+  .draw-control {
+    display: flex;
+    justify-content: space-between;
     z-index: 10;
-    color: white;
-    background-color: #20222a;
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 100px;
-    height: 50px;
-    font-size: 20px;
-    border-radius: 5px;
-    box-shadow: 2px 2px 3px #696969;
-    &:hover {
-      cursor: pointer;
+    width: 300px;
+    height: 60px;
+    background-color: rgba(0, 0, 0, 0);
+    position: fixed;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    div {
+      width: 170px;
+      height: 50px;
+      border-radius: 5px;
+      padding: {
+        left: 10px;
+      }
+      background-color: #20222a;
+      span {
+        color: white;
+      }
+      input {
+        width: 150px;
+        height: 18px;
+      }
     }
-    &:disabled {
-      background-color: #606060;
-      cursor: wait;
+    #draw {
+      z-index: 10;
+      color: white;
+      background-color: #20222a;
+      width: 100px;
+      height: 50px;
+      font-size: 20px;
+      border-radius: 5px;
+      &:hover {
+        cursor: pointer;
+      }
+      &:disabled {
+        cursor: wait;
+      }
+      .spinner {
+        margin: auto;
+        padding: 0;
+        width: 25px;
+        height: 25px;
+        border: 5px solid white;
+        border-top: 5px solid black;
+        border-radius: 50%;
+        background-color: rgba(0, 0, 0, 0);
+        animation: spin 1.5s linear infinite;
+        @keyframes spin {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+      }
     }
   }
   #locate {
@@ -164,110 +216,127 @@ import { Loader } from "@googlemaps/js-api-loader";
 import { onMounted, reactive, ref } from "vue";
 import { restaurantsAPI } from "@/apis/restaurant";
 
+//Map initializer
 const loader = new Loader({
   apiKey: import.meta.env.VITE_APIKEY,
   version: "weekly",
   libraries: ["places"],
 });
-const restaurant = reactive({
-  lat: 0,
-  lng: 0,
-  name: "",
-  addr: "",
-  rating: -1,
-  photo: "",
-  phone: "",
-});
-const location_user = reactive({
-  lat: 0,
-  lng: 0,
-});
-const isDetailDisplaying = ref(false);
-const isProcessing = ref(false);
-
 let g: typeof google;
 let map: google.maps.Map;
 let marker: google.maps.Marker;
 let circle: google.maps.Circle;
 let placesService: google.maps.places.PlacesService;
 
-async function getCurrentLocation() {
-  try {
-    //get latlng of current position
-    navigator.geolocation.getCurrentPosition((pos) => {
-      location_user.lat = pos.coords.latitude;
-      location_user.lng = pos.coords.longitude;
-
-      //set map, circle, marker to center
-      map.panTo(location_user);
-      circle.setCenter(location_user);
-      marker = new g.maps.Marker({
-        position: location_user,
-        map: map,
-      });
+function initializeMap() {
+  return new Promise<string | void>((resolve, reject) => {
+    const mapEl = document.getElementById("map") as HTMLDivElement;
+    if (!mapEl) return reject("No corresponding map element found");
+    map = new google.maps.Map(mapEl, {
+      zoom: 18,
+      disableDefaultUI: true,
     });
-  } catch (error) {
-    console.log(error);
+    circle = new google.maps.Circle({
+      map,
+      strokeWeight: 1.5,
+      strokeColor: "#1ed0f4",
+      fillColor: "#82e0f3",
+    });
+    marker = new g.maps.Marker({ map });
+    placesService = new google.maps.places.PlacesService(map);
+    resolve();
+  });
+}
+
+//Restaurant drawing & positioning feature
+const location_user = {
+  lat: 0,
+  lng: 0,
+};
+const radius = ref(500);
+const isDetailDisplaying = ref(false);
+const isProcessing = ref(false);
+const restaurant = reactive({
+  lat: 0,
+  lng: 0,
+  name: "",
+  address: "",
+  rating: -1,
+  photo: "",
+  phone: "",
+});
+
+function zoomCircle() {
+  if (radius.value < 0) radius.value = 0;
+  circle.setRadius(radius.value);
+}
+
+function getCurrentLocation() {
+  navigator.geolocation.getCurrentPosition((pos) => {
+    location_user.lat = pos.coords.latitude;
+    location_user.lng = pos.coords.longitude;
+    map.panTo(location_user);
+    circle.setCenter(location_user);
+    circle.setRadius(radius.value);
+    marker.setPosition(location_user);
+  });
+}
+
+function nearbyRestaurantSearch(radius: number) {
+  return new Promise<string | undefined>((resolve, reject) => {
+    const request = {
+      location: location_user,
+      radius,
+      type: "restaurant",
+      openNow: true,
+    };
+    placesService.nearbySearch(request, (results) => {
+      if (!results || !results.length) return reject("No restaurant found");
+      const restIdx = Math.floor(Math.random() * results.length);
+      return resolve(results[restIdx].place_id);
+    });
+  });
+}
+
+function getDetail(placeId: string | undefined) {
+  if (placeId !== undefined)
+    return new Promise<string | google.maps.places.PlaceResult>(
+      (resolve, reject) => {
+        placesService.getDetails({ placeId }, (result) => {
+          if (!result) return reject("No detail found");
+          return resolve(result);
+        });
+      }
+    );
+}
+
+function displayDetail(
+  detail: string | google.maps.places.PlaceResult | undefined
+) {
+  if (typeof detail === "string" || typeof detail === "undefined") return;
+  if (detail && detail.photos) {
+    const photoIdx = Math.floor(Math.random() * detail.photos?.length);
+    restaurant.photo = detail.photos[photoIdx].getUrl();
+    restaurant.lat = detail.geometry?.location?.lat() ?? 0;
+    restaurant.lng = detail.geometry?.location?.lng() ?? 0;
+    restaurant.name = detail.name ?? "";
+    restaurant.address = detail.formatted_address?.replace("台灣", "") ?? "";
+    restaurant.rating = detail.rating ?? -1;
+    restaurant.phone = detail.formatted_phone_number ?? "";
+    isDetailDisplaying.value = true;
+    marker.setPosition(restaurant);
+    map.panTo(restaurant);
   }
 }
 
 async function drawRandomRestaurant() {
   try {
-    //prevent multiple requests
     isProcessing.value = true;
-    //request to be sent to google api
-    const request = {
-      location: location_user,
-      radius: 300,
-      type: "restaurant",
-      openNow: true,
-    };
-
-    //get nearby restaurants from google
-    placesService.nearbySearch(request, (results) => {
-      if (results) {
-        const restIdx = Math.floor(Math.random() * results.length);
-        const resultDrawed = results[restIdx];
-        if (resultDrawed.place_id) {
-          //get details of selected restaurant
-          placesService.getDetails(
-            { placeId: resultDrawed.place_id },
-            async (result) => {
-              try {
-                //assign data to reactive object
-                if (result && result.photos) {
-                  const photoIdx = Math.floor(
-                    Math.random() * result.photos?.length
-                  );
-                  restaurant.photo = result.photos[photoIdx].getUrl();
-                  restaurant.lat = result.geometry?.location?.lat() ?? 0;
-                  restaurant.lng = result.geometry?.location?.lng() ?? 0;
-                  restaurant.name = result.name ?? "";
-                  restaurant.addr =
-                    result.formatted_address?.replace("台灣", "") ?? "";
-                  restaurant.rating = result.rating ?? -1;
-                  restaurant.phone = result.formatted_phone_number ?? "";
-                  //display position and details
-                  isDetailDisplaying.value = true;
-                  marker.setPosition(restaurant);
-                  map.panTo(restaurant);
-                  const { data } = await restaurantsAPI.createRecord({
-                    name: restaurant.name,
-                    phone: restaurant.phone,
-                    address: restaurant.addr,
-                  });
-                  if (data.status !== "success") throw new Error(data.message);
-                }
-              } catch (error) {
-                console.log(error);
-              } finally {
-                isProcessing.value = false;
-              }
-            }
-          );
-        }
-      }
-    });
+    const id = await nearbyRestaurantSearch(radius.value);
+    const detail = await getDetail(id);
+    displayDetail(detail);
+    const { name, phone, address } = restaurant;
+    await restaurantsAPI.createRecord({ name, phone, address });
   } catch (error) {
     console.log(error);
   } finally {
@@ -275,34 +344,9 @@ async function drawRandomRestaurant() {
   }
 }
 
-async function initializeMap() {
-  try {
-    const mapEl = document.getElementById("map") as HTMLDivElement;
-    g = await loader.load();
-    //init map
-    if (mapEl) {
-      map = new google.maps.Map(mapEl, {
-        zoom: 18,
-        disableDefaultUI: true,
-      });
-      //init circle
-      circle = new google.maps.Circle({
-        map: map,
-        radius: 100,
-        strokeWeight: 1.5,
-        strokeColor: "#1ed0f4",
-        fillColor: "#82e0f3",
-      });
-      //init placesService
-      placesService = new google.maps.places.PlacesService(map);
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-onMounted(() => {
-  initializeMap();
+onMounted(async () => {
+  g = await loader.load();
+  await initializeMap();
   getCurrentLocation();
 });
 </script>
