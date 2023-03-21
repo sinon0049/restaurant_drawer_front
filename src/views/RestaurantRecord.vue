@@ -18,7 +18,7 @@
           :key="item.id"
           :class="{ borderblack: displayId === item.id }"
         >
-          <span class="restaurant-name" :data-id="item.id">{{
+          <span class="restaurant-name" :data-id="item.id" :title="item.name">{{
             item.name
           }}</span>
           <div class="detail" :class="{ hide: displayId !== item.id }">
@@ -55,7 +55,6 @@
       display: none;
     }
     .record-group {
-      //background-color: #ebebeb;
       max-height: calc(100vh - 200px);
       overflow-y: auto;
       &::-webkit-scrollbar-track {
@@ -79,6 +78,13 @@
         padding: 0 10px;
         border-top: 1px solid grey;
         .restaurant-name {
+          max-width: 600px;
+          display: block;
+          height: 100%;
+          width: 80%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
           &:hover {
             cursor: pointer;
           }
@@ -114,6 +120,7 @@
         }
         .borderblack {
           border: 1px solid black;
+          border-radius: 3px;
         }
       }
     }
