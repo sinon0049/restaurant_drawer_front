@@ -267,7 +267,7 @@ const restaurant = reactive({
 });
 
 function zoomCircle() {
-  if (radius.value < 0) radius.value = 0;
+  if (typeof radius.value !== "number") radius.value = 0;
   circle.setRadius(radius.value);
 }
 
