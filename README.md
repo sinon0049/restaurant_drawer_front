@@ -10,7 +10,7 @@ Just sign in, insert the radius you want to search, so you can...
   
 ## How to use
 
-You can [visit our website](https://todorest-715325.firebaseapp.com/) or just clone this project(need backend server):  
+You can [visit our website](https://todorest-715325.firebaseapp.com/) or just clone this project([backend server needed](https://github.com/sinon0049/restaurant_drawer_back)):  
 ```
 git clone https://github.com/sinon0049/restaurant_drawer_front.git
 ```
@@ -33,5 +33,5 @@ npm run dev
 ## Sign In Policy
 
 You can create an account or use Facebook/Google account to sign in.  
-We will just keep your userId for signin authentication. No any other information will be accessed.
+We will just keep your userId for signin authentication. No any other information will be accessed.  
 If you want to delete your connection between your social account and this app, just click "disconnected" in the profile page of this app.
