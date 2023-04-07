@@ -16,9 +16,9 @@
               @click="commitEdit"
               class="btn-save"
             >
-              save
+              Save
             </button>
-            <button @click="cancelEdit" class="btn-cancel">cancel</button>
+            <button @click="cancelEdit" class="btn-cancel">Cancel</button>
           </div>
         </div>
         <span
@@ -43,9 +43,9 @@
               @click="commitEdit"
               class="btn-save"
             >
-              save
+              Save
             </button>
-            <button @click="cancelEdit" class="btn-cancel">cancel</button>
+            <button @click="cancelEdit" class="btn-cancel">Cancel</button>
           </div>
         </div>
 
@@ -91,9 +91,9 @@
               @click="updatePassword"
               class="btn-save"
             >
-              save
+              Save
             </button>
-            <button @click="cancelEdit" class="btn-cancel">cancel</button>
+            <button @click="cancelEdit" class="btn-cancel">Cancel</button>
           </div>
         </div>
       </div>
@@ -102,7 +102,10 @@
     <div class="profile-container">
       <!-- facebook -->
       <div class="profile">
-        <span>Facebook</span>
+        <div class="brand-group">
+          <fa-icon id="icon-fb" :icon="['fab', 'facebook']" />
+          <span>Facebook</span>
+        </div>
         <span class="grey">{{
           store.profile.facebookId ? "Connected" : "Not Connected"
         }}</span>
@@ -123,7 +126,10 @@
       </div>
       <!-- google -->
       <div class="profile">
-        <span>Google</span>
+        <div class="brand-group">
+          <fa-icon id="icon-g" :icon="['fab', 'google']" />
+          <span>Google</span>
+        </div>
         <span class="grey">{{
           store.profile.googleId ? "Connected" : "Not Connected"
         }}</span>
@@ -158,9 +164,13 @@
       display: flex;
       flex-direction: column;
       height: fit-content;
+      padding: {
+        top: 10px;
+        bottom: 10px;
+      }
       border-bottom: 1px solid grey;
       text-align: left;
-      line-height: 40px;
+      line-height: 30px;
       position: relative;
       .btn-modify {
         position: absolute;
@@ -209,22 +219,46 @@
       }
       .input-container {
         height: 80px;
-        margin: auto auto 10px 0;
+        margin: auto auto 0 0;
       }
       input {
-        height: 20px;
+        height: 30px;
         width: 250px;
+        padding: {
+          left: 5px;
+          right: 5px;
+        }
         margin-left: 0;
         border-radius: 3px;
         border: 1px solid #858585;
+      }
+      .brand-group {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        #icon-g {
+          border-radius: 99rem;
+          background-color: #db4437;
+          color: white;
+          width: 15px;
+          height: 15px;
+          padding: 5px;
+          margin-right: 5px;
+        }
+        #icon-fb {
+          border-radius: 99rem;
+          color: #3b5998;
+          width: 25px;
+          height: 25px;
+          margin-right: 5px;
+        }
       }
     }
   }
 }
 @media screen and (min-width: 768px) {
   .container {
-    width: 40%;
-    max-width: 550px;
+    width: 600px;
     .profile-container {
       .profile {
         display: grid;
