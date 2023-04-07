@@ -63,10 +63,10 @@
       aspect-ratio: 16/9;
     }
     #map {
-      content: url("@/../map_pc.jpg");
+      content: url("/map_pc.jpg");
     }
     #record {
-      content: url("@/../record_pc.jpg");
+      content: url("/record_pc.jpg");
     }
   }
 }
@@ -91,10 +91,10 @@
       aspect-ratio: 5/11;
     }
     #map {
-      content: url("@/../map.jpg");
+      content: url("/map.jpg");
     }
     #record {
-      content: url("@/../record.jpg");
+      content: url("/record.jpg");
     }
     #sign-in {
       position: relative;
