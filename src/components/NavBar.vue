@@ -24,6 +24,9 @@
     >
       <div id="navbar-control"></div>
     </div>
+    <router-link to="/signin" v-else class="btn-signin">
+      <span>Sign In</span>
+    </router-link>
   </nav>
 </template>
 
@@ -37,6 +40,20 @@
   color: white;
   line-height: 3rem;
   position: relative;
+  a,
+  span {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  a {
+    text-decoration: none;
+    color: white;
+  }
+  .btn-signin {
+    position: absolute;
+    right: 2%;
+  }
   #title {
     margin-left: 20px;
     color: white;
@@ -55,17 +72,7 @@
     bottom: -100%;
     transform: scale(1, 1);
     transform-origin: top;
-    transition: transform 0.5s ease 0.1s;
-    a,
-    span {
-      &:hover {
-        cursor: pointer;
-      }
-    }
-    a {
-      text-decoration: none;
-      color: white;
-    }
+    transition: transform 0.3s ease 0.1s;
   }
   .close {
     transform: scale(1, 0);
@@ -75,6 +82,9 @@
     height: 30px;
     position: absolute;
     right: 20px;
+    &:hover {
+      cursor: pointer;
+    }
     #navbar-control {
       position: absolute;
       border-radius: 1px;
