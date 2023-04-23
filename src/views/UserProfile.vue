@@ -427,6 +427,9 @@ async function updatePassword() {
     if (data.status !== "success") return swalAlert.errorMsg(data.message);
     store.profile.isPwdSet = true;
     editStatus.currentEditing = "";
+    password.confirmPwd = "";
+    password.currentPwd = "";
+    password.newPwd = "";
     swalAlert.successMsg(data.message);
   } catch (error) {
     console.log(error);
