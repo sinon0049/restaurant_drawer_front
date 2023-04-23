@@ -3,30 +3,22 @@ import { reactive } from "vue";
 import type { OAuthUserData } from "env";
 
 export const userStore = defineStore("userStore", () => {
-  const profile: OAuthUserData = reactive({
+  const defaultProfile: OAuthUserData = {
     id: -1,
     name: "",
     email: "",
     facebookId: "",
     googleId: "",
     isPwdSet: false,
-  });
+  };
+  const profile: OAuthUserData = reactive({ ...defaultProfile });
 
   function storeUser(user: OAuthUserData) {
-    profile.id = user.id;
-    profile.name = user.name;
-    profile.email = user.email;
-    profile.facebookId = user.facebookId;
-    profile.googleId = user.googleId;
-    profile.isPwdSet = user.isPwdSet;
+    Object.assign(profile, user);
   }
 
   function cleanUser() {
-    profile.id = -1;
-    profile.name = "";
-    profile.email = "";
-    profile.facebookId = "";
-    profile.googleId = "";
+    Object.assign(profile, defaultProfile);
   }
 
   return {
