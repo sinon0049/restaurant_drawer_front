@@ -1,25 +1,25 @@
 /// <reference types="vite/client" />
 
-export interface signInData {
+export interface SignInData {
   email: string;
   password: string;
 }
 
-export interface signUpData extends signInData {
+export interface SignUpData extends SignInData {
   name: string;
 }
 
-export interface facebookSignInData {
+export interface FacebookSignInData {
   facebookId: string;
 }
 
-export interface facebookResponse {
+export interface FacebookResponse {
   id: string;
   email: string;
   name: string;
 }
 
-export interface googleSignInData {
+export interface GoogleSignInData {
   access_token: string;
 }
 
@@ -35,26 +35,26 @@ export interface OAuthUserData extends OAuthSignUpData {
   isPwdSet: boolean;
 }
 
-export interface updatedProfile {
+export interface UpdatedProfile {
   name?: string;
   email?: string;
   facebookId?: string | null;
   access_token?: string | null;
 }
 
-export interface updatedPassword {
+export interface UpdatedPassword {
   currentPwd: string;
   newPwd: string;
   confirmPwd: string;
 }
 
-export interface restaurantRecord {
+export interface NewRestaurant {
   name: string;
   address: string;
   phone: string;
 }
 
-export interface restaurantFullRecord extends restaurantRecord {
+export interface RestaurantRecord extends NewRestaurant {
   id: number;
   createdAt: string;
   updatedAt: string;

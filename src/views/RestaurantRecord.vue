@@ -161,12 +161,12 @@
 
 <script lang="ts" setup>
 import { restaurantsAPI } from "@/apis/restaurant";
-import type { restaurantFullRecord } from "env";
+import type { RestaurantRecord } from "env";
 import { onBeforeMount, reactive, ref } from "vue";
 import dayjs from "dayjs";
 import { swalAlert } from "@/utils/helper";
 
-const restaurants: restaurantFullRecord[] = reactive([]);
+const restaurants: RestaurantRecord[] = reactive([]);
 // control which restaurant detail is displayed when using mobile
 const displayId = ref(-1);
 
@@ -182,7 +182,7 @@ async function handleRecord(e: Event) {
     if (target.tagName === "svg") {
       const { data } = await restaurantsAPI.deleteRecord(currentId);
       if (data.status !== "success") throw new Error(data.message);
-      restaurants.forEach((item: restaurantFullRecord, idx, arr) => {
+      restaurants.forEach((item: RestaurantRecord, idx, arr) => {
         if (item.id === currentId) {
           arr.splice(idx, 1);
         }

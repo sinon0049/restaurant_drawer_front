@@ -295,7 +295,7 @@
 import { usersAPI } from "@/apis/user";
 import { userStore } from "@/stores/user";
 import { reactive } from "vue";
-import type { facebookResponse, updatedPassword } from "env";
+import type { FacebookResponse, UpdatedPassword } from "env";
 //import { useRouter } from "vue-router";
 import { googleTokenLogin } from "vue3-google-login";
 import { swalAlert } from "@/utils/helper";
@@ -312,7 +312,7 @@ const profileTempStore = reactive({
   name: "",
   email: "",
 });
-const password: updatedPassword = reactive({
+const password: UpdatedPassword = reactive({
   currentPwd: "",
   newPwd: "",
   confirmPwd: "",
@@ -391,7 +391,7 @@ async function disconnectSocialAccount(accountFrom: string) {
 async function connectFacebookAccount() {
   FB.login((response: facebook.StatusResponse) => {
     if (response.status === "connected") {
-      FB.api("/me/?fields=id,name,email", async (user: facebookResponse) => {
+      FB.api("/me/?fields=id,name,email", async (user: FacebookResponse) => {
         const payLoad = { facebookId: user.id };
         const { data } = await usersAPI.updateProfile(payLoad);
         if (data.status !== "success") return console.log(data.message);
