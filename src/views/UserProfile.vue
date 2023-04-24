@@ -296,11 +296,10 @@ import { usersAPI } from "@/apis/user";
 import { userStore } from "@/stores/user";
 import { reactive } from "vue";
 import type { FacebookResponse, UpdatedPassword } from "env";
-//import { useRouter } from "vue-router";
 import { googleTokenLogin } from "vue3-google-login";
 import { swalAlert } from "@/utils/helper";
+import isEmail from "validator/es/lib/isEmail";
 
-//const router = useRouter();
 const store = userStore();
 const editStatus = reactive({
   // control display of input
@@ -338,29 +337,23 @@ async function commitEdit() {
   try {
     if (editStatus.currentEditing === "name") {
       if (!store.profile.name.trim())
-        return console.log("please type your name");
-      // disable button to avoid multiple request
-      editStatus.isEditCommited = true;
-      const { data } = await usersAPI.updateProfile({
-        name: store.profile.name,
-      });
-      if (data.status !== "success") return console.log(data.message);
-      // enable button and close input after receiving response
-      editStatus.currentEditing = "";
-      swalAlert.successMsg(data.message);
+        return swalAlert.errorMsg("Please type your name.");
     } else if (editStatus.currentEditing === "email") {
       if (!store.profile.email.trim())
-        return console.log("please type your email");
-      // disable button to avoid multiple request
-      editStatus.isEditCommited = true;
-      const { data } = await usersAPI.updateProfile({
-        email: store.profile.email,
-      });
-      if (data.status !== "success") return console.log(data.message);
-      // enable button and close input after receiving response
-      editStatus.currentEditing = "";
-      swalAlert.successMsg(data.message);
+        return swalAlert.errorMsg("Please type your email.");
+      if (!isEmail(store.profile.email))
+        return swalAlert.errorMsg("Invalid email.");
     }
+    // disable button to avoid multiple request
+    editStatus.isEditCommited = true;
+    const { data } = await usersAPI.updateProfile({
+      email: store.profile.email,
+      name: store.profile.name,
+    });
+    if (data.status !== "success") return console.log(data.message);
+    // enable button and close input after receiving response
+    editStatus.currentEditing = "";
+    swalAlert.successMsg(data.message);
   } catch (error) {
     console.log(error);
   } finally {
