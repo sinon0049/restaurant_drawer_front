@@ -1,5 +1,6 @@
 <template>
-  <div class="container">
+  <BouncingLoader v-if="isLoading" />
+  <div class="container" v-else>
     <h2>Restaurant record</h2>
     <div class="record-container">
       <div class="record header">
@@ -165,10 +166,12 @@ import type { RestaurantRecord } from "env";
 import { onBeforeMount, reactive, ref } from "vue";
 import dayjs from "dayjs";
 import { swalAlert } from "@/utils/helper";
+import BouncingLoader from "@/components/BouncingLoader.vue";
 
 const restaurants: RestaurantRecord[] = reactive([]);
 // control which restaurant detail is displayed when using mobile
 const displayId = ref(-1);
+let isLoading = ref(true);
 
 function formatDate(originalDate: string) {
   return dayjs(originalDate).format("YYYY/MM/DD HH:mm");
@@ -203,5 +206,6 @@ async function handleRecord(e: Event) {
 onBeforeMount(async () => {
   const { data } = await restaurantsAPI.getRecord();
   restaurants.push(...data.restaurants);
+  isLoading.value = false;
 });
 </script>

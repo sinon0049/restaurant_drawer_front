@@ -233,7 +233,7 @@ function initializeMap() {
     const mapEl = document.getElementById("map") as HTMLDivElement;
     if (!mapEl) return reject("No corresponding map element found");
     map = new google.maps.Map(mapEl, {
-      zoom: 18,
+      zoom: 16,
       disableDefaultUI: true,
     });
     circle = new google.maps.Circle({
