@@ -8,7 +8,7 @@ Just sign in, insert the radius you want to search, so you can...
   + Randomly draw a restaurant nearby you
   + Check your drawing record anytime and anywhere
   
-## How to use
+## How To Use
 
 You can [visit our website](https://todorest-715325.firebaseapp.com/) or just clone this project([backend server needed](https://github.com/sinon0049/restaurant_drawer_back)):  
 ```
@@ -35,3 +35,13 @@ npm run dev
 You can create an account or use Facebook/Google account to sign in.  
 We will just keep your userId for signin authentication. No any other information will be accessed.  
 If you want to delete your connection between your social account and this app, just click "disconnected" in the profile page of this app.
+
+## Environments And Utilities
+
++ Node.js
++ Typescript
++ ESLint
++ Vue3
++ vue-router
++ Pinia
++ SASS
