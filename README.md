@@ -38,7 +38,6 @@ If you want to delete your connection between your social account and this app, 
 
 ## Environments And Utilities
 
-+ Node.js
 + Typescript
 + ESLint
 + Vue3
