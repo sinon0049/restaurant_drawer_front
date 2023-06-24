@@ -11,6 +11,8 @@ export interface signUpData extends signInData {
 
 export interface facebookSignInData {
   facebookId: string;
+  name: string;
+  email: string;
 }
 
 export interface facebookResponse {

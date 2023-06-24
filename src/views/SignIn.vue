@@ -146,6 +146,8 @@ function handleFacebookSignIn() {
       FB.api("/me/?fields=id,name,email", async (user: facebookResponse) => {
         const { data } = await usersAPI.facebookSignIn({
           facebookId: user.id,
+          name: user.name,
+          email: user.email,
         });
         if (data.status !== "success") {
           localStorage.setItem("facebookId", data.facebookId);
