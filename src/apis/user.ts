@@ -34,4 +34,10 @@ export const usersAPI = {
   updatePassword: function (payLoad: updatedPassword) {
     return api.put("/users/password", payLoad);
   },
+  connectFacebookAccount: function (payLoad: updatedProfile) {
+    return api.put("/users/fbaccount", payLoad);
+  },
+  connectGoogleAccount: function (payLoad: updatedProfile) {
+    return api.put("/users/gaccount", payLoad);
+  },
 };
