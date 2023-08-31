@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h2>Restaurant record</h2>
+    <h2>Restaurant Drawing Record</h2>
     <div class="record-container">
       <div class="record header">
         <span>Name</span>
@@ -16,12 +16,12 @@
           class="record"
           v-for="item in restaurants"
           :key="item.id"
-          :class="{ borderblack: displayId === item.id }"
+          :class="{ hide: displayId !== item.id }"
         >
           <span class="restaurant-name" :data-id="item.id">{{
             item.name
           }}</span>
-          <div class="detail" :class="{ hide: displayId !== item.id }">
+          <div class="detail">
             <span class="mobile-grey">
               <span class="mobile-only">&nbsp;&nbsp;&nbsp;Address: </span>
               {{ item.address }}
@@ -35,7 +35,7 @@
               {{ formatDate(item.createdAt) }}
             </span>
           </div>
-          <fa-icon icon="x" size="xl" :data-id="item.id" />
+          <fa-icon icon="x" size="xl" :data-id="item.id" id="delete" />
         </div>
       </div>
     </div>
@@ -55,7 +55,6 @@
       display: none;
     }
     .record-group {
-      //background-color: #ebebeb;
       max-height: calc(100vh - 200px);
       overflow-y: auto;
       &::-webkit-scrollbar-track {
@@ -83,6 +82,9 @@
             cursor: pointer;
           }
         }
+        #delete {
+          cursor: pointer;
+        }
       }
     }
   }
@@ -93,12 +95,16 @@
       .record-group {
         .record {
           line-height: 3rem;
+          height: 180px;
+          transition: all 0.2s ease 0.2s;
+          background-color: #d3d3d3;
           .detail {
             display: flex;
             flex-direction: column;
             width: 100%;
             position: relative;
-            bottom: -100%;
+            transform-origin: top;
+            transition: all 0.2s ease 0.2s;
             .mobile-grey {
               color: #3b3939;
             }
@@ -108,12 +114,13 @@
             right: 10px;
             top: 10px;
           }
-          .hide {
-            display: none;
-          }
         }
-        .borderblack {
-          border: 1px solid black;
+        .hide {
+          height: 3rem;
+          background-color: white;
+          .detail {
+            transform: scale(1, 0);
+          }
         }
       }
     }

@@ -17,6 +17,11 @@
       </router-link>
       <span @click="signOut">Signout</span>
     </div>
+    <div class="btn-guest" v-else>
+      <router-link to="/signin">
+        <span>Sign In</span>
+      </router-link>
+    </div>
     <div
       id="navbar-control-container"
       @click="toggleNavbar"
@@ -55,7 +60,7 @@
     bottom: -100%;
     transform: scale(1, 1);
     transform-origin: top;
-    transition: transform 0.5s ease 0.1s;
+    transition: transform 0.2s ease 0.1s;
     a,
     span {
       &:hover {
@@ -67,6 +72,22 @@
       color: white;
     }
   }
+
+  .btn-guest {
+    position: absolute;
+    right: 20px;
+    a,
+    span {
+      &:hover {
+        cursor: pointer;
+      }
+    }
+    a {
+      text-decoration: none;
+      color: white;
+    }
+  }
+
   .close {
     transform: scale(1, 0);
   }

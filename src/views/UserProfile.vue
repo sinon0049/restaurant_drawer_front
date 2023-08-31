@@ -16,9 +16,9 @@
               @click="commitEdit"
               class="btn-save"
             >
-              save
+              Save
             </button>
-            <button @click="cancelEdit" class="btn-cancel">cancel</button>
+            <button @click="cancelEdit" class="btn-cancel">Cancel</button>
           </div>
         </div>
         <span
@@ -43,9 +43,9 @@
               @click="commitEdit"
               class="btn-save"
             >
-              save
+              Save
             </button>
-            <button @click="cancelEdit" class="btn-cancel">cancel</button>
+            <button @click="cancelEdit" class="btn-cancel">Cancel</button>
           </div>
         </div>
 
@@ -91,9 +91,9 @@
               @click="updatePassword"
               class="btn-save"
             >
-              save
+              Save
             </button>
-            <button @click="cancelEdit" class="btn-cancel">cancel</button>
+            <button @click="cancelEdit" class="btn-cancel">Cancel</button>
           </div>
         </div>
       </div>
@@ -178,7 +178,7 @@
         height: 45px;
         justify-content: space-between;
         button {
-          width: 50px;
+          width: 60px;
           margin: auto 10px auto 0;
           border: 0;
           height: 35px;
@@ -359,8 +359,8 @@ async function connectFacebookAccount() {
     if (response.status === "connected") {
       FB.api("/me/?fields=id,name,email", async (user: facebookResponse) => {
         const payLoad = { facebookId: user.id };
-        const { data } = await usersAPI.updateProfile(payLoad);
-        if (data.status !== "success") return console.log(data.message);
+        const { data } = await usersAPI.connectFacebookAccount(payLoad);
+        if (data.status !== "success") return swalAlert.errorMsg(data.message);
         store.profile.facebookId = data.user.facebookId;
         swalAlert.successMsg("Account connected successfully.");
         FB.logout();
@@ -372,8 +372,8 @@ async function connectFacebookAccount() {
 async function connectGoogleAccount() {
   try {
     const { access_token } = await googleTokenLogin();
-    const { data } = await usersAPI.updateProfile({ access_token });
-    if (data.status !== "success") return console.log(data.message);
+    const { data } = await usersAPI.connectGoogleAccount({ access_token });
+    if (data.status !== "success") return swalAlert.errorMsg(data.message);
     store.profile.googleId = data.user.googleId;
     swalAlert.successMsg("Account connected successfully.");
   } catch (error) {

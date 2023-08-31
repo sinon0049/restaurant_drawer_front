@@ -13,9 +13,17 @@ import {
   faLocationCrosshairs,
   faFloppyDisk,
   faX,
+  faDice,
 } from "@fortawesome/free-solid-svg-icons";
 import { faFacebook, faGoogle } from "@fortawesome/free-brands-svg-icons";
-library.add(faLocationCrosshairs, faFloppyDisk, faX, faFacebook, faGoogle);
+library.add(
+  faLocationCrosshairs,
+  faFloppyDisk,
+  faX,
+  faFacebook,
+  faGoogle,
+  faDice
+);
 
 import vue3GoogleLogin from "vue3-google-login";
 
@@ -29,7 +37,7 @@ const firebaseConfig = {
   messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
   appId: import.meta.env.VITE_APP_ID,
 };
-const fireBaseApp = initializeApp(firebaseConfig);
+initializeApp(firebaseConfig);
 
 const app = createApp(App).component("fa-icon", FontAwesomeIcon);
 

@@ -1,12 +1,5 @@
 <template>
   <div class="container">
-    <button
-      @click.stop.prevent="drawRandomRestaurant"
-      id="draw"
-      :disabled="isProcessing"
-    >
-      draw
-    </button>
     <div
       id="map"
       class="map"
@@ -16,6 +9,25 @@
       class="rest-detail"
       :class="{ detailDrawed: isDetailDisplaying === true }"
     >
+      <div class="r-container">
+        <span>Radius(meter)</span>
+        <input
+          type="number"
+          name="radius"
+          id="radius"
+          min="0"
+          v-model="radius"
+          @input="zoomCircle"
+        />
+      </div>
+      <button
+        @click.stop.prevent="drawRandomRestaurant"
+        id="draw"
+        :disabled="isProcessing"
+      >
+        <fa-icon icon="dice" v-if="!isProcessing" />
+        <div class="spinner" v-else></div>
+      </button>
       <fa-icon
         @click.stop.prevent="getCurrentLocation"
         icon="location-crosshairs"
@@ -31,16 +43,24 @@
         class="detail-container"
         :class="{ detailContainerDisplaying: isDetailDisplaying === true }"
       >
-        <span>name:&nbsp;&nbsp;{{ restaurant.name }}</span>
-        <span>address:&nbsp;&nbsp;{{ restaurant.addr }}</span>
-        <span>rating:&nbsp;&nbsp;{{ restaurant.rating }}</span>
-        <span>phone:&nbsp;&nbsp;{{ restaurant.phone }}</span>
+        <span>Name:&nbsp;&nbsp;{{ restaurant.name }}</span>
+        <span>Address:&nbsp;&nbsp;{{ restaurant.addr }}</span>
+        <span>Rating:&nbsp;&nbsp;{{ restaurant.rating }}</span>
+        <span>Phone:&nbsp;&nbsp;{{ restaurant.phone }}</span>
       </div>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 .container {
   height: calc(100% - 3rem);
   position: relative;
@@ -87,7 +107,7 @@
     color: white;
     background-color: #20222a;
     position: absolute;
-    top: 10px;
+    top: -60px;
     left: 10px;
     width: 100px;
     height: 50px;
@@ -98,8 +118,16 @@
       cursor: pointer;
     }
     &:disabled {
-      background-color: #606060;
       cursor: wait;
+    }
+    .spinner {
+      margin: 0 auto;
+      width: 20px;
+      height: 20px;
+      border: 5px white solid;
+      border-radius: 50%;
+      border-top: 5px solid #82e0f3;
+      animation: rotation 1s linear infinite;
     }
   }
   #locate {
@@ -111,6 +139,23 @@
     right: 10px;
     border-radius: 50%;
     box-shadow: 2px 2px 3px #696969;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  .r-container {
+    color: white;
+    span {
+      display: block;
+    }
+    width: fit-content;
+    padding: 0 5px;
+    border-radius: 5px;
+    height: 50px;
+    background-color: #20222a;
+    position: absolute;
+    top: -60px;
+    left: 130px;
   }
   .mapDrawed {
     height: 60%;
@@ -141,6 +186,17 @@
         right: unset;
         bottom: 10px;
         left: -60px;
+      }
+      #draw {
+        top: unset;
+        right: unset;
+        bottom: 8px;
+        left: -180px;
+      }
+      .r-container {
+        top: unset;
+        bottom: 8px;
+        left: -370px;
       }
     }
     .mapDrawed {
@@ -179,6 +235,7 @@ const location_user = reactive({
 });
 const isDetailDisplaying = ref(false);
 const isProcessing = ref(false);
+const radius = ref(200);
 
 let map: google.maps.Map;
 let marker: google.maps.Marker;
@@ -201,27 +258,28 @@ async function getCurrentLocation() {
             zoom: 18,
             disableDefaultUI: true,
           });
+          //init marker
+          marker = new google.maps.Marker({
+            position: location_user,
+            map: map,
+          });
+          //init circle
+          circle = new google.maps.Circle({
+            map: map,
+            center: location_user,
+            radius: radius.value,
+            strokeWeight: 1.5,
+            strokeColor: "#1ed0f4",
+            fillColor: "#82e0f3",
+          });
+          //init placesService
+          placesService = new google.maps.places.PlacesService(map);
         } else {
           //smoothly move map if user click locate button
           map.panTo(location_user);
+          circle.setCenter(location_user);
+          marker.setPosition(location_user);
         }
-
-        //init marker
-        marker = new google.maps.Marker({
-          position: location_user,
-          map: map,
-        });
-        //init circle
-        circle = new google.maps.Circle({
-          map: map,
-          center: location_user,
-          radius: 100,
-          strokeWeight: 1.5,
-          strokeColor: "#1ed0f4",
-          fillColor: "#82e0f3",
-        });
-        //init placesService
-        placesService = new google.maps.places.PlacesService(map);
       }
     });
   } catch (error) {
@@ -236,7 +294,7 @@ async function drawRandomRestaurant() {
     //request to be sent to google api
     const request = {
       location: location_user,
-      radius: 300,
+      radius: radius.value,
       type: "restaurant",
       openNow: true,
     };
@@ -289,6 +347,10 @@ async function drawRandomRestaurant() {
   } catch (error) {
     console.log(error);
   }
+}
+
+function zoomCircle() {
+  return circle.setRadius(radius.value);
 }
 
 onMounted(() => getCurrentLocation());
