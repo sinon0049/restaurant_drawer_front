@@ -6,7 +6,8 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "types": ["facebook-js-sdk"]
+    "types": ["facebook-js-sdk"],
+    "ignoreDeprecations": "5.0",
   },
 
   "references": [
