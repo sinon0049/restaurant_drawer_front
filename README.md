@@ -1,7 +1,10 @@
 # Restaurant Drawer
+# Restaurant Drawer
 
 This is a web app that can randomly draw a restaurant nearby for you when you have no idea what to eat.
+This is a web app that can randomly draw a restaurant nearby for you when you have no idea what to eat.
 
+## Features
 ## Features
 
 Just sign in, insert the radius you want to search, so you can...  
@@ -22,14 +25,19 @@ cd restaurant_drawer_front
 
 Download necassary npm packages
 ```
+Download necassary npm packages
+```
 npm install
 ```
 
 And you can use it.
 ```
+And you can use it.
+```
 npm run dev
 ```
 
+## Sign In Policy
 ## Sign In Policy
 
 You can create an account or use Facebook/Google account to sign in.  

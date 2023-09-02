@@ -19,6 +19,7 @@
           :class="{ hide: displayId !== item.id }"
         >
           <span class="restaurant-name" :data-id="item.id" :title="item.name">{{
+          <span class="restaurant-name" :data-id="item.id" :title="item.name">{{
             item.name
           }}</span>
           <div class="detail">
@@ -78,6 +79,13 @@
         padding: 0 10px;
         border-top: 1px solid grey;
         .restaurant-name {
+          max-width: 600px;
+          display: block;
+          height: 100%;
+          width: 80%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
           max-width: 600px;
           display: block;
           height: 100%;
@@ -173,6 +181,7 @@ import type { RestaurantRecord } from "env";
 import { onBeforeMount, reactive, ref } from "vue";
 import dayjs from "dayjs";
 import { swalAlert } from "@/utils/helper";
+import BouncingLoader from "@/components/BouncingLoader.vue";
 
 const restaurants: RestaurantRecord[] = reactive([]);
 // control which restaurant detail is displayed when using mobile
