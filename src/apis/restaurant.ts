@@ -1,8 +1,8 @@
 import api from "@/utils/helper";
-import type { restaurantRecord } from "env";
+import type { NewRestaurant } from "env";
 
 export const restaurantsAPI = {
-  createRecord: function (payLoad: restaurantRecord) {
+  createRecord: function (payLoad: NewRestaurant) {
     return api.post("/restaurants", payLoad);
   },
   getRecord: function () {

@@ -114,7 +114,7 @@
 import { usersAPI } from "@/apis/user";
 import { useRouter } from "vue-router";
 import { reactive } from "vue";
-import type { facebookResponse } from "env";
+import type { FacebookResponse } from "env";
 import { googleTokenLogin } from "vue3-google-login";
 import { swalAlert } from "@/utils/helper";
 
@@ -143,7 +143,7 @@ async function signIn() {
 function handleFacebookSignIn() {
   FB.login((response: facebook.StatusResponse) => {
     if (response.status === "connected") {
-      FB.api("/me/?fields=id,name,email", async (user: facebookResponse) => {
+      FB.api("/me/?fields=id,name,email", async (user: FacebookResponse) => {
         const { data } = await usersAPI.facebookSignIn({
           facebookId: user.id,
           name: user.name,
