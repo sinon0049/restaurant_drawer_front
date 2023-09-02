@@ -42,6 +42,20 @@
   color: white;
   line-height: 3rem;
   position: relative;
+  a,
+  span {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  a {
+    text-decoration: none;
+    color: white;
+  }
+  .btn-signin {
+    position: absolute;
+    right: 2%;
+  }
   #title {
     margin-left: 20px;
     color: white;
@@ -96,6 +110,9 @@
     height: 30px;
     position: absolute;
     right: 20px;
+    &:hover {
+      cursor: pointer;
+    }
     #navbar-control {
       position: absolute;
       border-radius: 1px;

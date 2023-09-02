@@ -102,7 +102,10 @@
     <div class="profile-container">
       <!-- facebook -->
       <div class="profile">
-        <span>Facebook</span>
+        <div class="brand-group">
+          <fa-icon id="icon-fb" :icon="['fab', 'facebook']" />
+          <span>Facebook</span>
+        </div>
         <span class="grey">{{
           store.profile.facebookId ? "Connected" : "Not Connected"
         }}</span>
@@ -123,7 +126,10 @@
       </div>
       <!-- google -->
       <div class="profile">
-        <span>Google</span>
+        <div class="brand-group">
+          <fa-icon id="icon-g" :icon="['fab', 'google']" />
+          <span>Google</span>
+        </div>
         <span class="grey">{{
           store.profile.googleId ? "Connected" : "Not Connected"
         }}</span>
@@ -158,9 +164,13 @@
       display: flex;
       flex-direction: column;
       height: fit-content;
+      padding: {
+        top: 10px;
+        bottom: 10px;
+      }
       border-bottom: 1px solid grey;
       text-align: left;
-      line-height: 40px;
+      line-height: 30px;
       position: relative;
       .btn-modify {
         position: absolute;
@@ -209,22 +219,46 @@
       }
       .input-container {
         height: 80px;
-        margin: auto auto 10px 0;
+        margin: auto auto 0 0;
       }
       input {
-        height: 20px;
+        height: 30px;
         width: 250px;
+        padding: {
+          left: 5px;
+          right: 5px;
+        }
         margin-left: 0;
         border-radius: 3px;
         border: 1px solid #858585;
+      }
+      .brand-group {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        #icon-g {
+          border-radius: 99rem;
+          background-color: #db4437;
+          color: white;
+          width: 15px;
+          height: 15px;
+          padding: 5px;
+          margin-right: 5px;
+        }
+        #icon-fb {
+          border-radius: 99rem;
+          color: #3b5998;
+          width: 25px;
+          height: 25px;
+          margin-right: 5px;
+        }
       }
     }
   }
 }
 @media screen and (min-width: 768px) {
   .container {
-    width: 40%;
-    max-width: 550px;
+    width: 600px;
     .profile-container {
       .profile {
         display: grid;
@@ -261,12 +295,11 @@
 import { usersAPI } from "@/apis/user";
 import { userStore } from "@/stores/user";
 import { reactive } from "vue";
-import type { facebookResponse, updatedPassword } from "env";
-//import { useRouter } from "vue-router";
+import type { FacebookResponse, UpdatedPassword } from "env";
 import { googleTokenLogin } from "vue3-google-login";
 import { swalAlert } from "@/utils/helper";
+import isEmail from "validator/es/lib/isEmail";
 
-//const router = useRouter();
 const store = userStore();
 const editStatus = reactive({
   // control display of input
@@ -278,7 +311,7 @@ const profileTempStore = reactive({
   name: "",
   email: "",
 });
-const password: updatedPassword = reactive({
+const password: UpdatedPassword = reactive({
   currentPwd: "",
   newPwd: "",
   confirmPwd: "",
@@ -304,29 +337,23 @@ async function commitEdit() {
   try {
     if (editStatus.currentEditing === "name") {
       if (!store.profile.name.trim())
-        return console.log("please type your name");
-      // disable button to avoid multiple request
-      editStatus.isEditCommited = true;
-      const { data } = await usersAPI.updateProfile({
-        name: store.profile.name,
-      });
-      if (data.status !== "success") return console.log(data.message);
-      // enable button and close input after receiving response
-      editStatus.currentEditing = "";
-      swalAlert.successMsg(data.message);
+        return swalAlert.errorMsg("Please type your name.");
     } else if (editStatus.currentEditing === "email") {
       if (!store.profile.email.trim())
-        return console.log("please type your email");
-      // disable button to avoid multiple request
-      editStatus.isEditCommited = true;
-      const { data } = await usersAPI.updateProfile({
-        email: store.profile.email,
-      });
-      if (data.status !== "success") return console.log(data.message);
-      // enable button and close input after receiving response
-      editStatus.currentEditing = "";
-      swalAlert.successMsg(data.message);
+        return swalAlert.errorMsg("Please type your email.");
+      if (!isEmail(store.profile.email))
+        return swalAlert.errorMsg("Invalid email.");
     }
+    // disable button to avoid multiple request
+    editStatus.isEditCommited = true;
+    const { data } = await usersAPI.updateProfile({
+      email: store.profile.email,
+      name: store.profile.name,
+    });
+    if (data.status !== "success") return console.log(data.message);
+    // enable button and close input after receiving response
+    editStatus.currentEditing = "";
+    swalAlert.successMsg(data.message);
   } catch (error) {
     console.log(error);
   } finally {
@@ -357,7 +384,7 @@ async function disconnectSocialAccount(accountFrom: string) {
 async function connectFacebookAccount() {
   FB.login((response: facebook.StatusResponse) => {
     if (response.status === "connected") {
-      FB.api("/me/?fields=id,name,email", async (user: facebookResponse) => {
+      FB.api("/me/?fields=id,name,email", async (user: FacebookResponse) => {
         const payLoad = { facebookId: user.id };
         const { data } = await usersAPI.connectFacebookAccount(payLoad);
         if (data.status !== "success") return swalAlert.errorMsg(data.message);
@@ -393,6 +420,9 @@ async function updatePassword() {
     if (data.status !== "success") return swalAlert.errorMsg(data.message);
     store.profile.isPwdSet = true;
     editStatus.currentEditing = "";
+    password.confirmPwd = "";
+    password.currentPwd = "";
+    password.newPwd = "";
     swalAlert.successMsg(data.message);
   } catch (error) {
     console.log(error);

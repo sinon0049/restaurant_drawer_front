@@ -18,7 +18,7 @@
           :key="item.id"
           :class="{ hide: displayId !== item.id }"
         >
-          <span class="restaurant-name" :data-id="item.id">{{
+          <span class="restaurant-name" :data-id="item.id" :title="item.name">{{
             item.name
           }}</span>
           <div class="detail">
@@ -78,6 +78,13 @@
         padding: 0 10px;
         border-top: 1px solid grey;
         .restaurant-name {
+          max-width: 600px;
+          display: block;
+          height: 100%;
+          width: 80%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
           &:hover {
             cursor: pointer;
           }
@@ -98,6 +105,10 @@
           height: 180px;
           transition: all 0.2s ease 0.2s;
           background-color: #d3d3d3;
+          .restaurant-name {
+            display: block;
+            height: 3rem;
+          }
           .detail {
             display: flex;
             flex-direction: column;
@@ -105,9 +116,6 @@
             position: relative;
             transform-origin: top;
             transition: all 0.2s ease 0.2s;
-            .mobile-grey {
-              color: #3b3939;
-            }
           }
           svg {
             position: absolute;
@@ -161,14 +169,15 @@
 
 <script lang="ts" setup>
 import { restaurantsAPI } from "@/apis/restaurant";
-import type { restaurantFullRecord } from "env";
+import type { RestaurantRecord } from "env";
 import { onBeforeMount, reactive, ref } from "vue";
 import dayjs from "dayjs";
 import { swalAlert } from "@/utils/helper";
 
-const restaurants: restaurantFullRecord[] = reactive([]);
+const restaurants: RestaurantRecord[] = reactive([]);
 // control which restaurant detail is displayed when using mobile
 const displayId = ref(-1);
+let isLoading = ref(true);
 
 function formatDate(originalDate: string) {
   return dayjs(originalDate).format("YYYY/MM/DD HH:mm");
@@ -182,7 +191,7 @@ async function handleRecord(e: Event) {
     if (target.tagName === "svg") {
       const { data } = await restaurantsAPI.deleteRecord(currentId);
       if (data.status !== "success") throw new Error(data.message);
-      restaurants.forEach((item: restaurantFullRecord, idx, arr) => {
+      restaurants.forEach((item: RestaurantRecord, idx, arr) => {
         if (item.id === currentId) {
           arr.splice(idx, 1);
         }
@@ -203,5 +212,6 @@ async function handleRecord(e: Event) {
 onBeforeMount(async () => {
   const { data } = await restaurantsAPI.getRecord();
   restaurants.push(...data.restaurants);
+  isLoading.value = false;
 });
 </script>
