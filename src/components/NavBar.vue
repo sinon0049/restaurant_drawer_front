@@ -29,9 +29,6 @@
     >
       <div id="navbar-control"></div>
     </div>
-    <router-link to="/signin" v-else class="btn-signin">
-      <span>Sign In</span>
-    </router-link>
   </nav>
 </template>
 
