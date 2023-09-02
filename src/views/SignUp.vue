@@ -96,6 +96,7 @@ import { usersAPI } from "@/apis/user";
 import { useRouter } from "vue-router";
 import { reactive } from "vue";
 import { swalAlert } from "@/utils/helper";
+import isEmail from "validator/es/lib/isEmail";
 
 const signUpData = reactive({
   name: "",
@@ -111,6 +112,7 @@ async function signUp() {
       return swalAlert.errorMsg("Please type your name.");
     if (!signUpData.email.trim())
       return swalAlert.errorMsg("Please type your email.");
+    if (!isEmail(signUpData.email)) return swalAlert.errorMsg("Invalid email.");
     if (!signUpData.password)
       return swalAlert.errorMsg("Please type your password.");
     if (!signUpData.confirmPassword)
