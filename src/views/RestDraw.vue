@@ -20,19 +20,14 @@
           @input="zoomCircle"
         />
       </div>
-      <button
-        @click.stop.prevent="drawRandomRestaurant"
-        id="draw"
-        :disabled="isProcessing"
-      >
+      <button @click="drawRandomRestaurant" id="draw" :disabled="isProcessing">
         <fa-icon icon="dice" v-if="!isProcessing" />
         <div class="spinner" v-else></div>
       </button>
       <fa-icon
-        @click.stop.prevent="getCurrentLocation"
         icon="location-crosshairs"
-        size="3x"
         id="locate"
+        @click="getCurrentLocation"
       />
       <img
         :src="restaurant.photo"
@@ -41,7 +36,7 @@
       />
       <div
         class="detail-container"
-        :class="{ detailContainerDisplaying: isDetailDisplaying === true }"
+        :class="{ detailDisplaying: isDetailDisplaying === true }"
       >
         <span>Name:&nbsp;&nbsp;{{ restaurant.name }}</span>
         <span>Address:&nbsp;&nbsp;{{ restaurant.addr }}</span>
@@ -98,7 +93,7 @@
     .imgDisplaying {
       display: block;
     }
-    .detailContainerDisplaying {
+    .detailDisplaying {
       display: flex;
     }
   }
@@ -131,12 +126,16 @@
     }
   }
   #locate {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    line-height: 50px;
     z-index: 10;
-    color: #20222a;
-    background-color: white;
+    color: white;
+    background-color: #20222a;
     position: absolute;
-    top: -60px;
-    right: 10px;
+    top: -50px;
+    right: 20px;
     border-radius: 50%;
     box-shadow: 2px 2px 3px #696969;
     &:hover {
@@ -184,7 +183,7 @@
       #locate {
         top: unset;
         right: unset;
-        bottom: 10px;
+        bottom: 20px;
         left: -60px;
       }
       #draw {
@@ -215,6 +214,7 @@ import { Loader } from "@googlemaps/js-api-loader";
 import { onMounted, reactive, ref } from "vue";
 import { restaurantsAPI } from "@/apis/restaurant";
 
+//Map initializer
 const loader = new Loader({
   apiKey: import.meta.env.VITE_APIKEY,
   version: "weekly",
@@ -236,117 +236,105 @@ const location_user = reactive({
 const isDetailDisplaying = ref(false);
 const isProcessing = ref(false);
 const radius = ref(200);
+loader.load();
 
 let map: google.maps.Map;
 let marker: google.maps.Marker;
 let circle: google.maps.Circle;
 let placesService: google.maps.places.PlacesService;
 
-async function getCurrentLocation() {
-  try {
-    const google = await loader.load();
-    const mapEl = document.getElementById("map") as HTMLDivElement;
-    navigator.geolocation.getCurrentPosition((pos) => {
-      location_user.lat = pos.coords.latitude;
-      location_user.lng = pos.coords.longitude;
+function getCurrentLocation() {
+  const mapEl = document.getElementById("map") as HTMLDivElement;
+  navigator.geolocation.getCurrentPosition((pos) => {
+    location_user.lat = pos.coords.latitude;
+    location_user.lng = pos.coords.longitude;
 
-      //init map
-      if (mapEl) {
-        if (!map) {
-          map = new google.maps.Map(mapEl, {
-            center: location_user,
-            zoom: 18,
-            disableDefaultUI: true,
-          });
-          //init marker
-          marker = new google.maps.Marker({
-            position: location_user,
-            map: map,
-          });
-          //init circle
-          circle = new google.maps.Circle({
-            map: map,
-            center: location_user,
-            radius: radius.value,
-            strokeWeight: 1.5,
-            strokeColor: "#1ed0f4",
-            fillColor: "#82e0f3",
-          });
-          //init placesService
-          placesService = new google.maps.places.PlacesService(map);
-        } else {
-          //smoothly move map if user click locate button
-          map.panTo(location_user);
-          circle.setCenter(location_user);
-          marker.setPosition(location_user);
-        }
+    //init map
+    if (mapEl) {
+      if (!map) {
+        map = new google.maps.Map(mapEl, {
+          center: location_user,
+          zoom: 18,
+          disableDefaultUI: true,
+        });
+        //init marker
+        marker = new google.maps.Marker({
+          position: location_user,
+          map: map,
+        });
+        //init circle
+        circle = new google.maps.Circle({
+          map: map,
+          center: location_user,
+          radius: radius.value,
+          strokeWeight: 1.5,
+          strokeColor: "#1ed0f4",
+          fillColor: "#82e0f3",
+        });
+        //init placesService
+        placesService = new google.maps.places.PlacesService(map);
+      } else {
+        //smoothly move map if user click locate button
+        map.panTo(location_user);
+        circle.setCenter(location_user);
+        marker.setPosition(location_user);
       }
-    });
-  } catch (error) {
-    console.log(error);
-  }
+    }
+  });
 }
 
-async function drawRandomRestaurant() {
-  try {
-    //prevent multiple requests
-    isProcessing.value = true;
-    //request to be sent to google api
-    const request = {
-      location: location_user,
-      radius: radius.value,
-      type: "restaurant",
-      openNow: true,
-    };
-
-    //get nearby restaurants from google
-    placesService.nearbySearch(request, (results) => {
-      if (results) {
-        const restIdx = Math.floor(Math.random() * results.length);
-        const resultDrawed = results[restIdx];
-        if (resultDrawed.place_id) {
-          //get details of selected restaurant
-          placesService.getDetails(
-            { placeId: resultDrawed.place_id },
-            async (result) => {
-              try {
-                //assign data to reactive object
-                if (result && result.photos) {
-                  const photoIdx = Math.floor(
-                    Math.random() * result.photos?.length
-                  );
-                  restaurant.photo = result.photos[photoIdx].getUrl();
-                  restaurant.lat = result.geometry?.location?.lat() ?? 0;
-                  restaurant.lng = result.geometry?.location?.lng() ?? 0;
-                  restaurant.name = result.name ?? "";
-                  restaurant.addr =
-                    result.formatted_address?.replace("台灣", "") ?? "";
-                  restaurant.rating = result.rating ?? -1;
-                  restaurant.phone = result.formatted_phone_number ?? "";
-                  //display position and details
-                  isDetailDisplaying.value = true;
-                  marker.setPosition(restaurant);
-                  map.panTo(restaurant);
-                  const { data } = await restaurantsAPI.createRecord({
-                    name: restaurant.name,
-                    phone: restaurant.phone,
-                    address: restaurant.addr,
-                  });
-                  if (data.status !== "success") throw new Error(data.message);
-                }
-              } catch (error) {
-                console.log(error);
-              } finally {
-                isProcessing.value = false;
+function drawRandomRestaurant() {
+  isProcessing.value = true;
+  const request = {
+    location: location_user,
+    radius: radius.value,
+    type: "restaurant",
+    openNow: true,
+  };
+  placesService.nearbySearch(request, (results) => {
+    if (results) {
+      const restIdx = Math.floor(Math.random() * results.length);
+      const resultDrawed = results[restIdx];
+      if (resultDrawed.place_id) {
+        //get details of selected restaurant
+        placesService.getDetails(
+          { placeId: resultDrawed.place_id },
+          async (result) => {
+            try {
+              //assign data to reactive object
+              if (result && result.photos) {
+                const photoIdx = Math.floor(
+                  Math.random() * result.photos?.length
+                );
+                restaurant.photo = result.photos[photoIdx].getUrl();
+                restaurant.lat = result.geometry?.location?.lat() ?? 0;
+                restaurant.lng = result.geometry?.location?.lng() ?? 0;
+                restaurant.name = result.name ?? "";
+                restaurant.addr =
+                  result.formatted_address?.replace("台灣", "") ?? "";
+                restaurant.rating = result.rating ?? -1;
+                restaurant.phone = result.formatted_phone_number ?? "";
+                //display position and details
+                isDetailDisplaying.value = true;
+                marker.setPosition(restaurant);
+                map.panTo(restaurant);
+                const { data } = await restaurantsAPI.createRecord({
+                  name: restaurant.name,
+                  phone: restaurant.phone,
+                  address: restaurant.addr,
+                });
+                if (data.status !== "success") throw new Error(data.message);
               }
+            } catch (error) {
+              console.log(error);
+            } finally {
+              isProcessing.value = false;
             }
-          );
-        }
+          }
+        );
       }
-    });
-  } catch (error) {
-    console.log(error);
-  }
+    }
+  });
 }
 
 function zoomCircle() {
