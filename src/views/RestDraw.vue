@@ -37,7 +37,6 @@
       <div
         class="detail-container"
         :class="{ detailDisplaying: isDetailDisplaying === true }"
-        :class="{ detailDisplaying: isDetailDisplaying === true }"
       >
         <span>Name:&nbsp;&nbsp;{{ restaurant.name }}</span>
         <span>Address:&nbsp;&nbsp;{{ restaurant.addr }}</span>
