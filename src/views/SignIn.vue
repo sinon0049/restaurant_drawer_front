@@ -162,7 +162,7 @@ function handleFacebookSignIn() {
 
 async function handleGoogleSignin() {
   try {
-    window.location.href = "http://localhost:3000/users/google";
+    window.location.href = "http://localhost:3000/users/google/signin";
   } catch (error) {
     console.log(error);
   }
