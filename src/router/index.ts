@@ -6,6 +6,7 @@ import OAuthSignUp from "@/views/OAuthSignUp.vue";
 import UserProfile from "@/views/UserProfile.vue";
 import RestaurantRecord from "@/views/RestaurantRecord.vue";
 import HomePage from "@/views/HomePage.vue";
+import OAuthCallback from "@/views/OAuthCallback.vue";
 import { usersAPI } from "@/apis/user";
 import { userStore } from "@/stores/user";
 
@@ -47,18 +48,29 @@ const router = createRouter({
       name: "restaurant-record",
       component: RestaurantRecord,
     },
+    {
+      path: "/oauth/callback",
+      name: "oauth-callback",
+      component: OAuthCallback,
+    },
   ],
 });
 
 router.beforeEach(async (to, from, next) => {
-  const pathWithoutAuth = ["/signin", "/signup", "/oauthsignup", "/"];
+  const pathWithoutAuth = [
+    "/signin",
+    "/signup",
+    "/oauthsignup",
+    "/",
+    "/oauth/callback",
+  ];
   const token = localStorage.getItem("token");
   const store = userStore();
-  if (token && pathWithoutAuth.includes(to.fullPath)) {
+  if (token && pathWithoutAuth.includes(to.path)) {
     const { data } = await usersAPI.getCurrentUser();
     store.storeUser(data);
     router.push({ name: "rest-draw" });
-  } else if (!token && !pathWithoutAuth.includes(to.fullPath)) {
+  } else if (!token && !pathWithoutAuth.includes(to.path)) {
     router.push({ name: "sign-in" });
   } else if (token) {
     const { data } = await usersAPI.getCurrentUser();

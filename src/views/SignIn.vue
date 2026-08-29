@@ -115,7 +115,6 @@ import { usersAPI } from "@/apis/user";
 import { useRouter } from "vue-router";
 import { reactive } from "vue";
 import type { FacebookResponse } from "env";
-import { googleTokenLogin } from "vue3-google-login";
 import { swalAlert } from "@/utils/helper";
 
 const signInData = reactive({
@@ -163,15 +162,7 @@ function handleFacebookSignIn() {
 
 async function handleGoogleSignin() {
   try {
-    const { access_token } = await googleTokenLogin();
-    const { data } = await usersAPI.googleSignIn({ access_token });
-    if (data.status !== "success") {
-      localStorage.setItem("googleId", data.googleId);
-      return router.push("/oauthsignup");
-    }
-    localStorage.setItem("token", data.token);
-    router.push("/restdraw");
-    swalAlert.successMsg("Sign in successfully.");
+    window.location.href = "http://localhost:3000/users/google";
   } catch (error) {
     console.log(error);
   }

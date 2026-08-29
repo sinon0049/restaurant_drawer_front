@@ -25,8 +25,6 @@ library.add(
   faDice
 );
 
-import vue3GoogleLogin from "vue3-google-login";
-
 // firebase config
 import { initializeApp } from "firebase/app";
 const firebaseConfig = {
@@ -43,6 +41,5 @@ const app = createApp(App).component("fa-icon", FontAwesomeIcon);
 
 app.use(createPinia());
 app.use(router);
-app.use(vue3GoogleLogin, { clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID });
 
 app.mount("#app");
