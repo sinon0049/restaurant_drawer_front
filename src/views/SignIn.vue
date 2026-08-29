@@ -131,7 +131,7 @@ async function signIn() {
       return swalAlert.errorMsg("Please type your password.");
     const { data } = await usersAPI.signIn(signInData);
     if (data.status !== "success") throw new Error(data.message);
-    localStorage.setItem("token", data.token);
+    //localStorage.setItem("token", data.token);
     router.push("/restdraw");
     swalAlert.successMsg("Sign in successfully.");
   } catch (error) {
