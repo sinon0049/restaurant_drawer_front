@@ -3,6 +3,7 @@ import Swal from "sweetalert2";
 
 const apiInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
+  withCredentials: true,
 });
 
 apiInstance.interceptors.request.use(

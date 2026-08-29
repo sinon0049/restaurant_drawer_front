@@ -64,17 +64,30 @@ router.beforeEach(async (to, from, next) => {
     "/",
     "/oauth/callback",
   ];
-  const token = localStorage.getItem("token");
+  //const token = localStorage.getItem("token");
   const store = userStore();
-  if (token && pathWithoutAuth.includes(to.path)) {
+  // if (token && pathWithoutAuth.includes(to.path)) {
+  //   const { data } = await usersAPI.getCurrentUser();
+  //   store.storeUser(data);
+  //   router.push({ name: "rest-draw" });
+  // } else if (!token && !pathWithoutAuth.includes(to.path)) {
+  //   router.push({ name: "sign-in" });
+  // } else if (token) {
+  //   const { data } = await usersAPI.getCurrentUser();
+  //   store.storeUser(data);
+  // }
+  try {
     const { data } = await usersAPI.getCurrentUser();
     store.storeUser(data);
-    router.push({ name: "rest-draw" });
-  } else if (!token && !pathWithoutAuth.includes(to.path)) {
-    router.push({ name: "sign-in" });
-  } else if (token) {
-    const { data } = await usersAPI.getCurrentUser();
-    store.storeUser(data);
+    if (pathWithoutAuth.includes(to.path)) {
+      router.push({ name: "rest-draw" });
+    }
+    console.log('good')
+  } catch (error) {
+    if (!pathWithoutAuth.includes(to.path)) {
+      router.push({ name: "sign-in" });
+    }
+    console.log('bad')
   }
   next();
 });
