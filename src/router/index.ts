@@ -6,7 +6,8 @@ import OAuthSignUp from "@/views/OAuthSignUp.vue";
 import UserProfile from "@/views/UserProfile.vue";
 import RestaurantRecord from "@/views/RestaurantRecord.vue";
 import HomePage from "@/views/HomePage.vue";
-import OAuthCallback from "@/views/OAuthCallback.vue";
+import OAuthSignInCallback from "@/views/OAuthSignInCallback.vue";
+import OAuthConnectCallback from "@/views/OAuthConnectCallback.vue";
 import { usersAPI } from "@/apis/user";
 import { userStore } from "@/stores/user";
 
@@ -49,9 +50,14 @@ const router = createRouter({
       component: RestaurantRecord,
     },
     {
-      path: "/oauth/callback",
-      name: "oauth-callback",
-      component: OAuthCallback,
+      path: "/oauth/signin/callback",
+      name: "oauth-signin-callback",
+      component: OAuthSignInCallback,
+    },
+    {
+      path: "/oauth/connect/callback",
+      name: "oauth-connect-callback",
+      component: OAuthConnectCallback,
     },
   ],
 });
@@ -82,12 +88,10 @@ router.beforeEach(async (to, from, next) => {
     if (pathWithoutAuth.includes(to.path)) {
       router.push({ name: "rest-draw" });
     }
-    console.log('good')
   } catch (error) {
     if (!pathWithoutAuth.includes(to.path)) {
       router.push({ name: "sign-in" });
     }
-    console.log('bad')
   }
   next();
 });

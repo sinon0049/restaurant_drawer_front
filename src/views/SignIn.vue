@@ -162,7 +162,9 @@ function handleFacebookSignIn() {
 
 async function handleGoogleSignin() {
   try {
-    window.location.href = "http://localhost:3000/users/google/signin";
+    window.location.href = `${
+      import.meta.env.VITE_BASE_URL
+    }/users/google/signin`;
   } catch (error) {
     console.log(error);
   }

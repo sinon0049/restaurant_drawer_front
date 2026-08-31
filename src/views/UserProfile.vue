@@ -296,7 +296,6 @@ import { usersAPI } from "@/apis/user";
 import { userStore } from "@/stores/user";
 import { reactive } from "vue";
 import type { FacebookResponse, UpdatedPassword } from "env";
-import { googleTokenLogin } from "vue3-google-login";
 import { swalAlert } from "@/utils/helper";
 import isEmail from "validator/es/lib/isEmail";
 
@@ -398,11 +397,9 @@ async function connectFacebookAccount() {
 
 async function connectGoogleAccount() {
   try {
-    const { access_token } = await googleTokenLogin();
-    const { data } = await usersAPI.connectGoogleAccount({ access_token });
-    if (data.status !== "success") return swalAlert.errorMsg(data.message);
-    store.profile.googleId = data.user.googleId;
-    swalAlert.successMsg("Account connected successfully.");
+    window.location.href = `${
+      import.meta.env.VITE_BASE_URL
+    }/users/google/connect`;
   } catch (error) {
     console.log(error);
   }

@@ -16,6 +16,9 @@ export const usersAPI = {
   signUp: function (payLoad: SignUpData) {
     return api.post("/users/signup", payLoad);
   },
+  signOut: function () {
+    return api.post("/users/signout");
+  },
   facebookSignIn: function (payLoad: FacebookSignInData) {
     return api.post("/users/facebooksignin", payLoad);
   },

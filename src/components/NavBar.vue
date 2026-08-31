@@ -164,19 +164,26 @@ import { useRouter } from "vue-router";
 import { userStore } from "@/stores/user";
 import { ref } from "vue";
 import { swalAlert } from "@/utils/helper";
+import { usersAPI } from "../apis/user";
 
 const router = useRouter();
 const store = userStore();
 const isNavbarOpen = ref(false);
 
-function signOut() {
-  localStorage.removeItem("token");
-  store.cleanUser();
-  router.push("/");
-  swalAlert.successMsg("Sign out successfully.");
-  FB.getLoginStatus((res) => {
-    if (res.status === "connected") FB.logout();
-  });
+async function signOut() {
+  try {
+    const { data } = await usersAPI.signOut();
+    if (data.status === "success") {
+      store.cleanUser();
+      router.push("/");
+      swalAlert.successMsg("Sign out successfully.");
+      FB.getLoginStatus((res) => {
+        if (res.status === "connected") FB.logout();
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function toggleNavbar() {
