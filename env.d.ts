@@ -9,22 +9,6 @@ export interface SignUpData extends SignInData {
   name: string;
 }
 
-export interface FacebookSignInData {
-  facebookId: string;
-  name: string;
-  email: string;
-}
-
-export interface FacebookResponse {
-  id: string;
-  email: string;
-  name: string;
-}
-
-export interface GoogleSignInData {
-  access_token: string;
-}
-
 export interface OAuthSignUpData {
   email: string;
   name: string;

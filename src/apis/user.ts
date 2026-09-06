@@ -1,8 +1,5 @@
 import api from "@/utils/helper";
 import type {
-  FacebookSignInData,
-  GoogleSignInData,
-  OAuthSignUpData,
   SignInData,
   SignUpData,
   UpdatedProfile,
@@ -19,15 +16,6 @@ export const usersAPI = {
   signOut: function () {
     return api.post("/users/signout");
   },
-  facebookSignIn: function (payLoad: FacebookSignInData) {
-    return api.post("/users/facebooksignin", payLoad);
-  },
-  googleSignIn: function (payLoad: GoogleSignInData) {
-    return api.post("/users/googlesignin", payLoad);
-  },
-  OAuthSignUp: function (payLoad: OAuthSignUpData) {
-    return api.post("/users/oauthsignup", payLoad);
-  },
   getCurrentUser: function () {
     return api.get("/users/current_user");
   },
@@ -37,10 +25,7 @@ export const usersAPI = {
   updatePassword: function (payLoad: UpdatedPassword) {
     return api.put("/users/password", payLoad);
   },
-  connectFacebookAccount: function (payLoad: UpdatedProfile) {
-    return api.put("/users/fbaccount", payLoad);
-  },
-  connectGoogleAccount: function (payLoad: UpdatedProfile) {
-    return api.put("/users/gaccount", payLoad);
+  oauthDisconnect: function (payLoad: UpdatedProfile) {
+    return api.post("/users/oauth/disconnect", payLoad);
   },
 };

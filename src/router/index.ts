@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from "vue-router";
 import SignIn from "../views/SignIn.vue";
 import SignUp from "../views/SignUp.vue";
 import RestDraw from "../views/RestDraw.vue";
-import OAuthSignUp from "@/views/OAuthSignUp.vue";
 import UserProfile from "@/views/UserProfile.vue";
 import RestaurantRecord from "@/views/RestaurantRecord.vue";
 import HomePage from "@/views/HomePage.vue";
@@ -35,11 +34,6 @@ const router = createRouter({
       component: RestDraw,
     },
     {
-      path: "/oauthsignup",
-      name: "oauth-signup",
-      component: OAuthSignUp,
-    },
-    {
       path: "/profile",
       name: "profile",
       component: UserProfile,
@@ -70,18 +64,8 @@ router.beforeEach(async (to, from, next) => {
     "/",
     "/oauth/callback",
   ];
-  //const token = localStorage.getItem("token");
   const store = userStore();
-  // if (token && pathWithoutAuth.includes(to.path)) {
-  //   const { data } = await usersAPI.getCurrentUser();
-  //   store.storeUser(data);
-  //   router.push({ name: "rest-draw" });
-  // } else if (!token && !pathWithoutAuth.includes(to.path)) {
-  //   router.push({ name: "sign-in" });
-  // } else if (token) {
-  //   const { data } = await usersAPI.getCurrentUser();
-  //   store.storeUser(data);
-  // }
+
   try {
     const { data } = await usersAPI.getCurrentUser();
     store.storeUser(data);

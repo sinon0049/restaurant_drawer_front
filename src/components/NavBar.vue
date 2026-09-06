@@ -159,7 +159,6 @@
 </style>
 
 <script lang="ts" setup>
-/* global FB: readonly */
 import { useRouter } from "vue-router";
 import { userStore } from "@/stores/user";
 import { ref } from "vue";
@@ -177,9 +176,6 @@ async function signOut() {
       store.cleanUser();
       router.push("/");
       swalAlert.successMsg("Sign out successfully.");
-      FB.getLoginStatus((res) => {
-        if (res.status === "connected") FB.logout();
-      });
     }
   } catch (error) {
     console.log(error);
