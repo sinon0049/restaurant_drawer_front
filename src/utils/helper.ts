@@ -6,21 +6,6 @@ const apiInstance = axios.create({
   withCredentials: true,
 });
 
-apiInstance.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token");
-    if (token)
-      config.headers = {
-        ...config.headers,
-        Authorization: `Bearer ${token}`,
-      };
-    return config;
-  },
-  (error) => {
-    console.log(error);
-  }
-);
-
 export default apiInstance;
 export const swalAlert = {
   successMsg: function (msg: string) {

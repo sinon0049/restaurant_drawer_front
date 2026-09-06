@@ -114,6 +114,7 @@ import { usersAPI } from "@/apis/user";
 import { useRouter } from "vue-router";
 import { reactive } from "vue";
 import { swalAlert } from "@/utils/helper";
+import axios from "axios";
 
 const signInData = reactive({
   email: "",
@@ -132,7 +133,9 @@ async function signIn() {
     router.push("/restdraw");
     swalAlert.successMsg("Sign in successfully.");
   } catch (error) {
-    console.log(error);
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      swalAlert.errorMsg("Invalid email or password.");
+    }
   }
 }
 
