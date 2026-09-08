@@ -2,11 +2,11 @@ import { createRouter, createWebHistory } from "vue-router";
 import SignIn from "../views/SignIn.vue";
 import SignUp from "../views/SignUp.vue";
 import RestDraw from "../views/RestDraw.vue";
-import OAuthSignUp from "@/views/OAuthSignUp.vue";
 import UserProfile from "@/views/UserProfile.vue";
 import RestaurantRecord from "@/views/RestaurantRecord.vue";
 import HomePage from "@/views/HomePage.vue";
-import OAuthCallback from "@/views/OAuthCallback.vue";
+import OAuthSignInCallback from "@/views/OAuthSignInCallback.vue";
+import OAuthConnectCallback from "@/views/OAuthConnectCallback.vue";
 import { usersAPI } from "@/apis/user";
 import { userStore } from "@/stores/user";
 
@@ -34,11 +34,6 @@ const router = createRouter({
       component: RestDraw,
     },
     {
-      path: "/oauthsignup",
-      name: "oauth-signup",
-      component: OAuthSignUp,
-    },
-    {
       path: "/profile",
       name: "profile",
       component: UserProfile,
@@ -49,9 +44,14 @@ const router = createRouter({
       component: RestaurantRecord,
     },
     {
-      path: "/oauth/callback",
-      name: "oauth-callback",
-      component: OAuthCallback,
+      path: "/oauth/signin/callback",
+      name: "oauth-signin-callback",
+      component: OAuthSignInCallback,
+    },
+    {
+      path: "/oauth/connect/callback",
+      name: "oauth-connect-callback",
+      component: OAuthConnectCallback,
     },
   ],
 });
@@ -64,17 +64,18 @@ router.beforeEach(async (to, from, next) => {
     "/",
     "/oauth/callback",
   ];
-  const token = localStorage.getItem("token");
   const store = userStore();
-  if (token && pathWithoutAuth.includes(to.path)) {
+
+  try {
     const { data } = await usersAPI.getCurrentUser();
     store.storeUser(data);
-    router.push({ name: "rest-draw" });
-  } else if (!token && !pathWithoutAuth.includes(to.path)) {
-    router.push({ name: "sign-in" });
-  } else if (token) {
-    const { data } = await usersAPI.getCurrentUser();
-    store.storeUser(data);
+    if (pathWithoutAuth.includes(to.path)) {
+      router.push({ name: "rest-draw" });
+    }
+  } catch (error) {
+    if (!pathWithoutAuth.includes(to.path)) {
+      router.push({ name: "sign-in" });
+    }
   }
   next();
 });

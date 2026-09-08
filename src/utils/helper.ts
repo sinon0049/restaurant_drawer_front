@@ -3,22 +3,8 @@ import Swal from "sweetalert2";
 
 const apiInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
+  withCredentials: true,
 });
-
-apiInstance.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token");
-    if (token)
-      config.headers = {
-        ...config.headers,
-        Authorization: `Bearer ${token}`,
-      };
-    return config;
-  },
-  (error) => {
-    console.log(error);
-  }
-);
 
 export default apiInstance;
 export const swalAlert = {

@@ -291,12 +291,10 @@
 </style>
 
 <script lang="ts" setup>
-/* global FB: readonly, facebook: readonly */
 import { usersAPI } from "@/apis/user";
 import { userStore } from "@/stores/user";
 import { reactive } from "vue";
-import type { FacebookResponse, UpdatedPassword } from "env";
-import { googleTokenLogin } from "vue3-google-login";
+import type { UpdatedPassword } from "env";
 import { swalAlert } from "@/utils/helper";
 import isEmail from "validator/es/lib/isEmail";
 
@@ -371,7 +369,7 @@ async function disconnectSocialAccount(accountFrom: string) {
       return swalAlert.errorMsg("Please set your password first.");
     const payLoad =
       accountFrom === "facebook" ? { facebookId: "" } : { googleId: "" };
-    const { data } = await usersAPI.updateProfile(payLoad);
+    const { data } = await usersAPI.oauthDisconnect(payLoad);
     if (data.status !== "success") return console.log(data.message);
     if (accountFrom === "facebook") store.profile.facebookId = "";
     else if (accountFrom === "google") store.profile.googleId = "";
@@ -382,27 +380,20 @@ async function disconnectSocialAccount(accountFrom: string) {
 }
 
 async function connectFacebookAccount() {
-  FB.login((response: facebook.StatusResponse) => {
-    if (response.status === "connected") {
-      FB.api("/me/?fields=id,name,email", async (user: FacebookResponse) => {
-        const payLoad = { facebookId: user.id };
-        const { data } = await usersAPI.connectFacebookAccount(payLoad);
-        if (data.status !== "success") return swalAlert.errorMsg(data.message);
-        store.profile.facebookId = data.user.facebookId;
-        swalAlert.successMsg("Account connected successfully.");
-        FB.logout();
-      });
-    }
-  });
+  try {
+    window.location.href = `${
+      import.meta.env.VITE_BASE_URL
+    }/users/facebook/connect`;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 async function connectGoogleAccount() {
   try {
-    const { access_token } = await googleTokenLogin();
-    const { data } = await usersAPI.connectGoogleAccount({ access_token });
-    if (data.status !== "success") return swalAlert.errorMsg(data.message);
-    store.profile.googleId = data.user.googleId;
-    swalAlert.successMsg("Account connected successfully.");
+    window.location.href = `${
+      import.meta.env.VITE_BASE_URL
+    }/users/google/connect`;
   } catch (error) {
     console.log(error);
   }

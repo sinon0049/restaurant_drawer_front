@@ -110,12 +110,11 @@
 </style>
 
 <script lang="ts" setup>
-/* global FB: readonly, facebook: readonly */
 import { usersAPI } from "@/apis/user";
 import { useRouter } from "vue-router";
 import { reactive } from "vue";
-import type { FacebookResponse } from "env";
 import { swalAlert } from "@/utils/helper";
+import axios from "axios";
 
 const signInData = reactive({
   email: "",
@@ -131,38 +130,30 @@ async function signIn() {
       return swalAlert.errorMsg("Please type your password.");
     const { data } = await usersAPI.signIn(signInData);
     if (data.status !== "success") throw new Error(data.message);
-    localStorage.setItem("token", data.token);
     router.push("/restdraw");
     swalAlert.successMsg("Sign in successfully.");
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      swalAlert.errorMsg("Invalid email or password.");
+    }
+  }
+}
+
+function handleFacebookSignIn() {
+  try {
+    window.location.href = `${
+      import.meta.env.VITE_BASE_URL
+    }/users/facebook/signin`;
   } catch (error) {
     console.log(error);
   }
 }
 
-function handleFacebookSignIn() {
-  FB.login((response: facebook.StatusResponse) => {
-    if (response.status === "connected") {
-      FB.api("/me/?fields=id,name,email", async (user: FacebookResponse) => {
-        const { data } = await usersAPI.facebookSignIn({
-          facebookId: user.id,
-          name: user.name,
-          email: user.email,
-        });
-        if (data.status !== "success") {
-          localStorage.setItem("facebookId", data.facebookId);
-          return router.push("/oauthsignup");
-        }
-        localStorage.setItem("token", data.token);
-        router.push("/restdraw");
-        swalAlert.successMsg("Sign in successfully.");
-      });
-    }
-  });
-}
-
 async function handleGoogleSignin() {
   try {
-    window.location.href = "http://localhost:3000/users/google/signin";
+    window.location.href = `${
+      import.meta.env.VITE_BASE_URL
+    }/users/google/signin`;
   } catch (error) {
     console.log(error);
   }
