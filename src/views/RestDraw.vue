@@ -241,7 +241,7 @@ loader.load();
 let map: google.maps.Map;
 let marker: google.maps.Marker;
 let circle: google.maps.Circle;
-let placesService: google.maps.places.PlacesService;
+//let placesService: google.maps.places.PlacesService;
 
 function getCurrentLocation() {
   const mapEl = document.getElementById("map") as HTMLDivElement;
@@ -272,7 +272,7 @@ function getCurrentLocation() {
           fillColor: "#82e0f3",
         });
         //init placesService
-        placesService = new google.maps.places.PlacesService(map);
+        //placesService = new google.maps.places.PlacesService(map);
       } else {
         //smoothly move map if user click locate button
         map.panTo(location_user);
@@ -283,58 +283,66 @@ function getCurrentLocation() {
   });
 }
 
-function drawRandomRestaurant() {
-  isProcessing.value = true;
-  const request = {
-    location: location_user,
-    radius: radius.value,
-    type: "restaurant",
-    openNow: true,
-  };
-  placesService.nearbySearch(request, (results) => {
-    if (results) {
-      const restIdx = Math.floor(Math.random() * results.length);
-      const resultDrawed = results[restIdx];
-      if (resultDrawed.place_id) {
-        //get details of selected restaurant
-        placesService.getDetails(
-          { placeId: resultDrawed.place_id },
-          async (result) => {
-            try {
-              //assign data to reactive object
-              if (result && result.photos) {
-                const photoIdx = Math.floor(
-                  Math.random() * result.photos?.length
-                );
-                restaurant.photo = result.photos[photoIdx].getUrl();
-                restaurant.lat = result.geometry?.location?.lat() ?? 0;
-                restaurant.lng = result.geometry?.location?.lng() ?? 0;
-                restaurant.name = result.name ?? "";
-                restaurant.addr =
-                  result.formatted_address?.replace("台灣", "") ?? "";
-                restaurant.rating = result.rating ?? -1;
-                restaurant.phone = result.formatted_phone_number ?? "";
-                //display position and details
-                isDetailDisplaying.value = true;
-                marker.setPosition(restaurant);
-                map.panTo(restaurant);
-                const { data } = await restaurantsAPI.createRecord({
-                  name: restaurant.name,
-                  phone: restaurant.phone,
-                  address: restaurant.addr,
-                });
-                if (data.status !== "success") throw new Error(data.message);
-              }
-            } catch (error) {
-              console.log(error);
-            } finally {
-              isProcessing.value = false;
-            }
-          }
-        );
-      }
-    }
-  });
+async function drawRandomRestaurant() {
+  try {
+    isProcessing.value = true;
+    const request = {
+      location: location_user,
+      radius: radius.value,
+    };
+
+    const { data } = await restaurantsAPI.drawRandomRestaurant(request);
+    console.log(data);
+    isProcessing.value = false;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    isProcessing.value = false;
+  }
+  // placesService.nearbySearch(request, (results) => {
+  //   if (results) {
+  //     const restIdx = Math.floor(Math.random() * results.length);
+  //     const resultDrawed = results[restIdx];
+  //     if (resultDrawed.place_id) {
+  //       //get details of selected restaurant
+  //       placesService.getDetails(
+  //         { placeId: resultDrawed.place_id },
+  //         async (result) => {
+  //           try {
+  //             //assign data to reactive object
+  //             if (result && result.photos) {
+  //               const photoIdx = Math.floor(
+  //                 Math.random() * result.photos?.length
+  //               );
+  //               restaurant.photo = result.photos[photoIdx].getUrl();
+  //               restaurant.lat = result.geometry?.location?.lat() ?? 0;
+  //               restaurant.lng = result.geometry?.location?.lng() ?? 0;
+  //               restaurant.name = result.name ?? "";
+  //               restaurant.addr =
+  //                 result.formatted_address?.replace("台灣", "") ?? "";
+  //               restaurant.rating = result.rating ?? -1;
+  //               restaurant.phone = result.formatted_phone_number ?? "";
+  //               //display position and details
+  //               isDetailDisplaying.value = true;
+  //               marker.setPosition(restaurant);
+  //               map.panTo(restaurant);
+  //               const { data } = await restaurantsAPI.createRecord({
+  //                 name: restaurant.name,
+  //                 phone: restaurant.phone,
+  //                 address: restaurant.addr,
+  //               });
+  //               if (data.status !== "success") throw new Error(data.message);
+  //             }
+  //           } catch (error) {
+  //             console.log(error);
+  //           } finally {
+  //             isProcessing.value = false;
+  //           }
+  //         }
+  //       );
+  //     }
+  //   }
+  // });
 }
 
 function zoomCircle() {
