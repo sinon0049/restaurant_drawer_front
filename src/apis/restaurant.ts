@@ -11,4 +11,7 @@ export const restaurantsAPI = {
   deleteRecord: function (restaurantId: number) {
     return api.delete(`/restaurants/${restaurantId}`);
   },
+  drawRandomRestaurant: function (request) {
+    return api.post("/restaurants/draw", request);
+  },
 };
