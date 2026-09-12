@@ -213,6 +213,7 @@
 import { Loader } from "@googlemaps/js-api-loader";
 import { onMounted, reactive, ref } from "vue";
 import { restaurantsAPI } from "@/apis/restaurant";
+import { swalAlert } from "@/utils/helper";
 
 //Map initializer
 const loader = new Loader({
@@ -235,7 +236,7 @@ const location_user = reactive({
 });
 const isDetailDisplaying = ref(false);
 const isProcessing = ref(false);
-const radius = ref(200);
+const radius = ref(500);
 loader.load();
 
 let map: google.maps.Map;
@@ -254,7 +255,7 @@ function getCurrentLocation() {
       if (!map) {
         map = new google.maps.Map(mapEl, {
           center: location_user,
-          zoom: 18,
+          zoom: 17,
           disableDefaultUI: true,
         });
         //init marker
@@ -271,8 +272,6 @@ function getCurrentLocation() {
           strokeColor: "#1ed0f4",
           fillColor: "#82e0f3",
         });
-        //init placesService
-        //placesService = new google.maps.places.PlacesService(map);
       } else {
         //smoothly move map if user click locate button
         map.panTo(location_user);
@@ -292,57 +291,21 @@ async function drawRandomRestaurant() {
     };
 
     const { data } = await restaurantsAPI.drawRandomRestaurant(request);
-    console.log(data);
-    isProcessing.value = false;
+    if (data.status === "success") {
+      if (data.restaurant === null) {
+        swalAlert.errorMsg("No restaurant found.");
+        return;
+      }
+      Object.assign(restaurant, data.restaurant);
+      marker.setPosition(restaurant);
+      map.panTo(restaurant);
+      isDetailDisplaying.value = true;
+    }
   } catch (error) {
     console.log(error);
   } finally {
     isProcessing.value = false;
   }
-  // placesService.nearbySearch(request, (results) => {
-  //   if (results) {
-  //     const restIdx = Math.floor(Math.random() * results.length);
-  //     const resultDrawed = results[restIdx];
-  //     if (resultDrawed.place_id) {
-  //       //get details of selected restaurant
-  //       placesService.getDetails(
-  //         { placeId: resultDrawed.place_id },
-  //         async (result) => {
-  //           try {
-  //             //assign data to reactive object
-  //             if (result && result.photos) {
-  //               const photoIdx = Math.floor(
-  //                 Math.random() * result.photos?.length
-  //               );
-  //               restaurant.photo = result.photos[photoIdx].getUrl();
-  //               restaurant.lat = result.geometry?.location?.lat() ?? 0;
-  //               restaurant.lng = result.geometry?.location?.lng() ?? 0;
-  //               restaurant.name = result.name ?? "";
-  //               restaurant.addr =
-  //                 result.formatted_address?.replace("台灣", "") ?? "";
-  //               restaurant.rating = result.rating ?? -1;
-  //               restaurant.phone = result.formatted_phone_number ?? "";
-  //               //display position and details
-  //               isDetailDisplaying.value = true;
-  //               marker.setPosition(restaurant);
-  //               map.panTo(restaurant);
-  //               const { data } = await restaurantsAPI.createRecord({
-  //                 name: restaurant.name,
-  //                 phone: restaurant.phone,
-  //                 address: restaurant.addr,
-  //               });
-  //               if (data.status !== "success") throw new Error(data.message);
-  //             }
-  //           } catch (error) {
-  //             console.log(error);
-  //           } finally {
-  //             isProcessing.value = false;
-  //           }
-  //         }
-  //       );
-  //     }
-  //   }
-  // });
 }
 
 function zoomCircle() {
