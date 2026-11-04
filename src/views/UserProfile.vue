@@ -74,16 +74,16 @@
           <input
             type="password"
             id="current-pwd"
-            v-model="password.currentPwd"
+            v-model="password.currentPassword"
             v-if="store.profile.isPwdSet"
           />
           <label for="new-pwd">New Password</label>
-          <input type="password" id="new-pwd" v-model="password.newPwd" />
+          <input type="password" id="new-pwd" v-model="password.newPassword" />
           <label for="confirm-pwd btn-modify">Confirm Password</label>
           <input
             type="password"
             id="confirm-pwd"
-            v-model="password.confirmPwd"
+            v-model="password.confirmPassword"
           />
           <div class="btn-group">
             <button
@@ -310,9 +310,9 @@ const profileTempStore = reactive({
   email: "",
 });
 const password: UpdatedPassword = reactive({
-  currentPwd: "",
-  newPwd: "",
-  confirmPwd: "",
+  currentPassword: "",
+  newPassword: "",
+  confirmPassword: "",
 });
 
 function startEdit(attribute: string) {
@@ -325,9 +325,9 @@ function startEdit(attribute: string) {
 function cancelEdit() {
   store.profile.name = profileTempStore.name;
   store.profile.email = profileTempStore.email;
-  password.currentPwd = "";
-  password.confirmPwd = "";
-  password.newPwd = "";
+  password.currentPassword = "";
+  password.confirmPassword = "";
+  password.newPassword = "";
   editStatus.currentEditing = "";
 }
 
@@ -401,19 +401,19 @@ async function connectGoogleAccount() {
 
 async function updatePassword() {
   try {
-    if (!password.currentPwd.trim() && store.profile.isPwdSet)
+    if (!password.currentPassword.trim() && store.profile.isPwdSet)
       return swalAlert.errorMsg("Please type your password.");
-    if (!password.newPwd.trim())
+    if (!password.newPassword.trim())
       return swalAlert.errorMsg("Please type your password.");
-    if (password.newPwd !== password.confirmPwd)
+    if (password.newPassword !== password.confirmPassword)
       return swalAlert.errorMsg("Please confirm your password.");
     const { data } = await usersAPI.updatePassword(password);
     if (data.status !== "success") return swalAlert.errorMsg(data.message);
     store.profile.isPwdSet = true;
     editStatus.currentEditing = "";
-    password.confirmPwd = "";
-    password.currentPwd = "";
-    password.newPwd = "";
+    password.confirmPassword = "";
+    password.currentPassword = "";
+    password.newPassword = "";
     swalAlert.successMsg(data.message);
   } catch (error) {
     console.log(error);

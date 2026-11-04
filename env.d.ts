@@ -29,9 +29,9 @@ export interface UpdatedProfile {
 }
 
 export interface UpdatedPassword {
-  currentPwd: string;
-  newPwd: string;
-  confirmPwd: string;
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
 }
 
 export interface NewRestaurant {
@@ -45,4 +45,12 @@ export interface RestaurantRecord extends NewRestaurant {
   createdAt: string;
   updatedAt: string;
   userId: number;
+}
+
+export interface drawRestaurantRequest {
+  location: {
+    lat: number;
+    lng: number;
+  };
+  radius: number;
 }
