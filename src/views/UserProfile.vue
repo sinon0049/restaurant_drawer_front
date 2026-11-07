@@ -368,7 +368,7 @@ async function disconnectSocialAccount(accountFrom: string) {
     if (!store.profile.isPwdSet)
       return swalAlert.errorMsg("Please set your password first.");
     const payLoad =
-      accountFrom === "facebook" ? { facebookId: "" } : { googleId: "" };
+      accountFrom === "facebook" ? { facebookId: null } : { googleId: null };
     const { data } = await usersAPI.oauthDisconnect(payLoad);
     if (data.status !== "success") return console.log(data.message);
     if (accountFrom === "facebook") store.profile.facebookId = "";
