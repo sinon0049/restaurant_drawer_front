@@ -113,7 +113,7 @@
 import { usersAPI } from "@/apis/user";
 import { useRouter } from "vue-router";
 import { reactive } from "vue";
-import { swalAlert } from "@/utils/helper";
+import { setCsrfToken, swalAlert } from "@/utils/helper";
 import axios from "axios";
 
 const signInData = reactive({
@@ -132,6 +132,7 @@ async function signIn() {
     if (data.status !== "success") throw new Error(data.message);
     router.push("/restdraw");
     swalAlert.successMsg("Sign in successfully.");
+    setCsrfToken(data.csrfToken);
   } catch (error) {
     if (axios.isAxiosError(error) && error.response?.status === 401) {
       swalAlert.errorMsg("Invalid email or password.");
