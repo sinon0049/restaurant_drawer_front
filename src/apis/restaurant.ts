@@ -1,17 +1,17 @@
-import api from "@/utils/helper";
+import { apiInstance } from "@/utils/helper";
 import type { drawRestaurantRequest, NewRestaurant } from "env";
 
 export const restaurantsAPI = {
   createRecord: function (payLoad: NewRestaurant) {
-    return api.post("/restaurants", payLoad);
+    return apiInstance.post("/restaurants", payLoad);
   },
   getRecord: function () {
-    return api.get("/restaurants");
+    return apiInstance.get("/restaurants");
   },
   deleteRecord: function (restaurantId: number) {
-    return api.delete(`/restaurants/${restaurantId}`);
+    return apiInstance.delete(`/restaurants/${restaurantId}`);
   },
   drawRandomRestaurant: function (request: drawRestaurantRequest) {
-    return api.post("/restaurants/draw", request);
+    return apiInstance.post("/restaurants/draw", request);
   },
 };
