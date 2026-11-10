@@ -113,7 +113,8 @@
 import { usersAPI } from "@/apis/user";
 import { useRouter } from "vue-router";
 import { reactive } from "vue";
-import { setCsrfToken, swalAlert } from "@/utils/helper";
+import { setCsrfToken } from "@/utils/apiInstance";
+import { swalAlert } from "../utils/swalAlert";
 import axios from "axios";
 
 const signInData = reactive({

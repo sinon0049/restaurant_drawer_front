@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useRouter } from "vue-router";
-import { swalAlert } from "../utils/helper";
+import { swalAlert } from "../utils/swalAlert";
 
 const router = useRouter();
 router.push("/restDraw");

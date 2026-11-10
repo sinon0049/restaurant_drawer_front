@@ -162,9 +162,9 @@
 import { useRouter } from "vue-router";
 import { userStore } from "@/stores/user";
 import { ref } from "vue";
-import { swalAlert } from "@/utils/helper";
+import { swalAlert } from "@/utils/swalAlert";
 import { usersAPI } from "../apis/user";
-import { setCsrfToken } from "../utils/helper";
+import { setCsrfToken } from "../utils/apiInstance";
 
 const router = useRouter();
 const store = userStore();

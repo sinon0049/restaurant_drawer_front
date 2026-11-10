@@ -1,4 +1,4 @@
-import { apiInstance } from "@/utils/helper";
+import { apiInstance } from "@/utils/apiInstance";
 import type {
   SignInData,
   SignUpData,

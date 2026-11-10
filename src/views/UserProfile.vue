@@ -295,7 +295,7 @@ import { usersAPI } from "@/apis/user";
 import { userStore } from "@/stores/user";
 import { reactive } from "vue";
 import type { UpdatedPassword } from "env";
-import { swalAlert } from "@/utils/helper";
+import { swalAlert } from "@/utils/swalAlert";
 import isEmail from "validator/es/lib/isEmail";
 
 const store = userStore();

@@ -213,7 +213,7 @@
 import { Loader } from "@googlemaps/js-api-loader";
 import { onMounted, reactive, ref } from "vue";
 import { restaurantsAPI } from "@/apis/restaurant";
-import { swalAlert } from "@/utils/helper";
+import { swalAlert } from "@/utils/swalAlert";
 
 //Map initializer
 const loader = new Loader({
