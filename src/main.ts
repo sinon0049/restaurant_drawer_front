@@ -27,6 +27,8 @@ library.add(
 
 // firebase config
 import { initializeApp } from "firebase/app";
+import { usersAPI } from "./apis/user.js";
+import { setCsrfToken } from "./utils/helper.js";
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_APIKEY,
   authDomain: import.meta.env.VITE_AUTH_DOMAIN,
@@ -36,6 +38,9 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_APP_ID,
 };
 initializeApp(firebaseConfig);
+
+const { data } = await usersAPI.getCsrftoken();
+setCsrfToken(data.csrfToken);
 
 const app = createApp(App).component("fa-icon", FontAwesomeIcon);
 
