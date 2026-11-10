@@ -14,7 +14,7 @@
       <div class="record-group" @click="handleRecord">
         <div
           class="record"
-          v-for="item in restaurants"
+          v-for="item in paginatedRestaurants"
           :key="item.id"
           :class="{ hide: displayId !== item.id }"
         >
@@ -38,6 +38,38 @@
           <fa-icon icon="x" size="xl" :data-id="item.id" id="delete" />
         </div>
       </div>
+      <nav
+        v-if="totalPages > 1"
+        class="pagination"
+        aria-label="Restaurant record pages"
+      >
+        <button
+          type="button"
+          aria-label="Previous page"
+          :disabled="currentPage === 1"
+          @click="currentPage--"
+        >
+          &lt;
+        </button>
+        <button
+          v-for="page in visiblePages"
+          :key="page"
+          type="button"
+          :class="{ active: currentPage === page }"
+          :aria-current="currentPage === page ? 'page' : undefined"
+          @click="currentPage = page"
+        >
+          {{ page }}
+        </button>
+        <button
+          type="button"
+          aria-label="Next page"
+          :disabled="currentPage === totalPages"
+          @click="currentPage++"
+        >
+          &gt;
+        </button>
+      </nav>
     </div>
   </div>
 </template>
@@ -53,6 +85,32 @@
     position: relative;
     .header {
       display: none;
+    }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      padding: 16px 0;
+
+      button {
+        min-width: 36px;
+        padding: 6px 10px;
+        border: 1px solid #aaa;
+        border-radius: 4px;
+        background: white;
+        cursor: pointer;
+
+        &.active {
+          color: white;
+          border-color: #333;
+          background: #333;
+        }
+
+        &:disabled {
+          opacity: 0.45;
+          cursor: default;
+        }
+      }
     }
     .record-group {
       max-height: calc(100vh - 200px);
@@ -177,11 +235,28 @@
 <script lang="ts" setup>
 import { restaurantsAPI } from "@/apis/restaurant";
 import type { RestaurantRecord } from "env";
-import { onBeforeMount, reactive, ref } from "vue";
+import { computed, onBeforeMount, reactive, ref } from "vue";
 import dayjs from "dayjs";
 import { swalAlert } from "@/utils/helper";
 
 const restaurants: RestaurantRecord[] = reactive([]);
+const recordsPerPage = 10;
+const currentPage = ref(1);
+const totalPages = computed(() =>
+  Math.ceil(restaurants.length / recordsPerPage)
+);
+const visiblePages = computed(() => {
+  const firstPage = Math.max(1, currentPage.value - 1);
+  const lastPage = Math.min(totalPages.value, currentPage.value + 1);
+  return Array.from(
+    { length: lastPage - firstPage + 1 },
+    (_, index) => firstPage + index
+  );
+});
+const paginatedRestaurants = computed(() => {
+  const start = (currentPage.value - 1) * recordsPerPage;
+  return restaurants.slice(start, start + recordsPerPage);
+});
 // control which restaurant detail is displayed when using mobile
 const displayId = ref(-1);
 let isLoading = ref(true);
@@ -203,6 +278,9 @@ async function handleRecord(e: Event) {
           arr.splice(idx, 1);
         }
       });
+      if (currentPage.value > totalPages.value) {
+        currentPage.value = Math.max(1, totalPages.value);
+      }
       return swalAlert.successMsg(data.message);
     }
     // if name is clicked

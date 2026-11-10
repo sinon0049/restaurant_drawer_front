@@ -1,5 +1,5 @@
 import api from "@/utils/helper";
-import type { NewRestaurant } from "env";
+import type { drawRestaurantRequest, NewRestaurant } from "env";
 
 export const restaurantsAPI = {
   createRecord: function (payLoad: NewRestaurant) {
@@ -10,5 +10,8 @@ export const restaurantsAPI = {
   },
   deleteRecord: function (restaurantId: number) {
     return api.delete(`/restaurants/${restaurantId}`);
+  },
+  drawRandomRestaurant: function (request: drawRestaurantRequest) {
+    return api.post("/restaurants/draw", request);
   },
 };
