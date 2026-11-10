@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 let csrfToken: string | null = null;
 
 const setCsrfToken = (token: string) => {
-  csrfToken = token
+  csrfToken = token;
 };
 
 const apiInstance = axios.create({
