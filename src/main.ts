@@ -39,12 +39,21 @@ const firebaseConfig = {
 };
 initializeApp(firebaseConfig);
 
-const { data } = await usersAPI.getCsrftoken();
-setCsrfToken(data.csrfToken);
+const boostrap = async() => {
+  try {
+    const { data } = await usersAPI.getCsrftoken();
+    setCsrfToken(data.csrfToken);
 
-const app = createApp(App).component("fa-icon", FontAwesomeIcon);
+    const app = createApp(App).component("fa-icon", FontAwesomeIcon);
 
-app.use(createPinia());
-app.use(router);
+    app.use(createPinia());
+    app.use(router);
 
-app.mount("#app");
+    app.mount("#app");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+boostrap();
+
