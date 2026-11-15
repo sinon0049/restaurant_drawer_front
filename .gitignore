@@ -29,7 +29,7 @@ coverage
 .vscode
 
 #env
-.env
+.env*
 
 #firebase config
 .firebaserc
