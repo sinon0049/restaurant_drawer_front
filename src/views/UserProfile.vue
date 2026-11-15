@@ -348,12 +348,14 @@ async function commitEdit() {
       email: store.profile.email,
       name: store.profile.name,
     });
-    if (data.status !== "success") return console.log(data.message);
     // enable button and close input after receiving response
     editStatus.currentEditing = "";
     swalAlert.successMsg(data.message);
   } catch (error) {
     console.log(error);
+    if(error.response.status === 409) {
+      swalAlert.errorMsg(error.response.data.message);
+    }
   } finally {
     editStatus.isEditCommited = false;
   }
