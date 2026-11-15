@@ -1,12 +1,5 @@
-import axios from "axios";
 import Swal from "sweetalert2";
 
-const apiInstance = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL,
-  withCredentials: true,
-});
-
-export default apiInstance;
 export const swalAlert = {
   successMsg: function (msg: string) {
     Swal.fire({

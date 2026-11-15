@@ -237,7 +237,7 @@ import { restaurantsAPI } from "@/apis/restaurant";
 import type { RestaurantRecord } from "env";
 import { computed, onBeforeMount, reactive, ref } from "vue";
 import dayjs from "dayjs";
-import { swalAlert } from "@/utils/helper";
+import { swalAlert } from "@/utils/swalAlert";
 
 const restaurants: RestaurantRecord[] = reactive([]);
 const recordsPerPage = 10;

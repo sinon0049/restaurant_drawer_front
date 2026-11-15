@@ -27,6 +27,8 @@ library.add(
 
 // firebase config
 import { initializeApp } from "firebase/app";
+import { usersAPI } from "./apis/user.js";
+import { setCsrfToken } from "./utils/apiInstance";
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_APIKEY,
   authDomain: import.meta.env.VITE_AUTH_DOMAIN,
@@ -37,9 +39,21 @@ const firebaseConfig = {
 };
 initializeApp(firebaseConfig);
 
-const app = createApp(App).component("fa-icon", FontAwesomeIcon);
+const boostrap = async() => {
+  try {
+    const { data } = await usersAPI.getCsrftoken();
+    setCsrfToken(data.csrfToken);
 
-app.use(createPinia());
-app.use(router);
+    const app = createApp(App).component("fa-icon", FontAwesomeIcon);
 
-app.mount("#app");
+    app.use(createPinia());
+    app.use(router);
+
+    app.mount("#app");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+boostrap();
+

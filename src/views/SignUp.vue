@@ -95,7 +95,7 @@
 import { usersAPI } from "@/apis/user";
 import { useRouter } from "vue-router";
 import { reactive } from "vue";
-import { swalAlert } from "@/utils/helper";
+import { swalAlert } from "@/utils/swalAlert";
 import isEmail from "validator/es/lib/isEmail";
 
 const signUpData = reactive({

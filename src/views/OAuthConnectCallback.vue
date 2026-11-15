@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useRoute } from "vue-router";
 import { useRouter } from "vue-router";
-import { swalAlert } from "../utils/helper";
+import { swalAlert } from "../utils/swalAlert";
 
 const route = useRoute();
 const router = useRouter();
