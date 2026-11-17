@@ -297,6 +297,7 @@ import { reactive } from "vue";
 import type { UpdatedPassword } from "env";
 import { swalAlert } from "@/utils/swalAlert";
 import isEmail from "validator/es/lib/isEmail";
+import axios from "axios";
 
 const store = userStore();
 const editStatus = reactive({
@@ -353,7 +354,7 @@ async function commitEdit() {
     swalAlert.successMsg(data.message);
   } catch (error) {
     console.log(error);
-    if(error.response.status === 409) {
+    if (axios.isAxiosError(error) && error.response?.status === 409) {
       swalAlert.errorMsg(error.response.data.message);
     }
   } finally {
